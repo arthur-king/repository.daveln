@@ -27,40 +27,20 @@ home       = mysettings.getAddonInfo('path')
 fanart     = xbmc.translatePath(os.path.join(home, 'fanart.jpg'))
 icon       = xbmc.translatePath(os.path.join(home, 'icon.png'))
 logos      = xbmc.translatePath(os.path.join(home, 'logos\\'))
-base_url   = 'http://www.htvonline.com.vn/'
-pagestr    = map(str, range(1,20))
+base_url   = 'http://www.htvonline.com.vn/livetv'
 
 def home():
-        addDir('[COLOR lime]HTVONLINE - [/COLOR][COLOR yellow]TV Channels[/COLOR]',base_url + 'livetv',2,logos + 'logo.png')
-        addDir('[COLOR cyan]Phim Việt Nam[/COLOR]',base_url + 'phim-viet-nam',1,logos + 'logo.png')
-        addDir('[COLOR magenta]TV Show[/COLOR]',base_url + 'shows',1,logos + 'logo.png')		
-
-def pagelist():
-		if 'Phim Việt Nam' in name:
-				i=0
-				for i in range(6):
-						addDir('[COLOR cyan]Phim Việt Nam - [/COLOR][COLOR yellow]Trang ' + pagestr[i] + '[/COLOR]',base_url + 'phim-viet-nam/trang-' + pagestr[i],2,icon)
-						i+=1
-		if 'TV Show' in name:
-				i=0
-				for i in range(5):
-						addDir('[COLOR magenta]TV Show - [/COLOR][COLOR yellow]Trang ' + pagestr[i] + '[/COLOR]',base_url + 'shows/trang-' + pagestr[i],2,icon)
-						i+=1
+        addDir('HTVONLINE - TV Channels', base_url, 1, logos + 'logo.png')
 		
 def index(url):
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-        response = urllib2.urlopen(req, timeout=90)
-        link=response.read()
-        response.close()
-        if'livetv' in url:
-				match=re.compile("<a class=\"mh-grids5-img\" href=\"([^\"]*)\" title=\"(.+?)\">\s.*?\s*<img src=\"(.*?)\"").findall(link)
-				for url,name,thumbnail in match:
-						addDir('[COLOR yellow]' + name + '[/COLOR]',url,3,thumbnail)
-        else:
-				match=re.compile("<a class=.*?href=\"([^\"]*)\">\s+<img src=.+?data-original=\"(.*?)\".*?alt=\"hình phim(.+?)\(\)\">").findall(link)
-				for url,thumbnail,name in match:
-						addDir('[COLOR yellow]' + name + '[/COLOR]',url,3,thumbnail)
+		req = urllib2.Request(url)
+		req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+		response = urllib2.urlopen(req, timeout=90)
+		link=response.read()
+		response.close()
+		match=re.compile("<a class=\"mh-grids5-img\" href=\"([^\"]*)\" title=\"(.+?)\">\s.*?\s*<img src=\"(.*?)\"").findall(link)
+		for url,name,thumbnail in match:
+				addDir(name, url, 2, thumbnail)
 				
 def videolinks(url,name):
         req = urllib2.Request(url)
@@ -71,7 +51,7 @@ def videolinks(url,name):
         thumbnail=re.compile("<meta property=\"og:image\" content=\"([^\"]*)\"").findall(link)	
         match=re.compile("file: \"([^\"]*)\"").findall(link)
         for url in match:
-                addLink(name,url,thumbnail[-1])
+                addLink(name, url, thumbnail[0])
                         
 def get_params():
         param=[]
@@ -131,16 +111,12 @@ print "Name: "+str(name)
 if mode==None or url==None or len(url)<1:
         print ""
         home()
-
-elif mode==1:
-        print ""
-        pagelist()		
 		
-elif mode==2:
+elif mode==1:
         print ""+url
         index(url)
        
-elif mode==3:
+elif mode==2:
         print ""+url
         videolinks(url,name)
 		
