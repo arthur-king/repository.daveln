@@ -22,7 +22,7 @@
 </addon>
 
 <addon id="plugin.video.nettiviviet"
-       name="nettiviviet"
+       name="*nettiviviet"
        version="1.0.0"
        provider-name="DaveLN">
   <requires>
@@ -43,7 +43,7 @@
 </addon>
 
 <addon id="plugin.video.phim3s.net"
-       name="phim3s.net"
+       name="*phim3s.net"
        version="1.0.0"
        provider-name="DaveLN">
   <requires>
