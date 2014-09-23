@@ -26,7 +26,7 @@ mysettings = xbmcaddon.Addon(id='plugin.video.htvonlinevn')
 home       = mysettings.getAddonInfo('path')
 fanart     = xbmc.translatePath(os.path.join(home, 'fanart.jpg'))
 icon       = xbmc.translatePath(os.path.join(home, 'icon.png'))
-logos      = xbmc.translatePath(os.path.join(home, 'resources\\logos\\'))
+logos      = xbmc.translatePath(os.path.join(home, 'logos\\'))
 base_url   = 'http://www.htvonline.com.vn/'
 pagestr    = map(str, range(1,20))
 
