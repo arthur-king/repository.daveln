@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="plugin.video.phim3s.net"
-       name="phim3s.net"
+       name="*phim3s.net"
        version="1.0.0"
        provider-name="DaveLN">
   <requires>
