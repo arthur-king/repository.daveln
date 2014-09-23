@@ -1,2 +1,8 @@
-version 1.0.3 (7/29/2014):
+v1.1.2
+update
+
+v1.1.0
+test
+
+v1.0.0
 Initial release
