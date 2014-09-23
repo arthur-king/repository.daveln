@@ -29,7 +29,7 @@ icon       = xbmc.translatePath(os.path.join(home, 'icon.png'))
 logos       = xbmc.translatePath(os.path.join(home, 'logos\\'))
 
 def home():
-        addDir('[COLOR lime]HTVONLINE - LIVETV[/COLOR]','http://www.htvonline.com.vn/livetv/',1,logos + 'logo.png')
+        addDir('HTVONLINE - LIVETV','http://www.htvonline.com.vn/livetv/',1,logos + 'logo.png')
 		
 def index(url):
         req = urllib2.Request(url)
@@ -39,7 +39,7 @@ def index(url):
         response.close()
         match=re.compile('<a class="mh-grids5-img" href="(.+?)" title="(.+?)">\s.*?\s*<img src="(.*?)"').findall(link)
         for url,name,thumbnail in match:
-                addDir('[COLOR yellow]' + name + '[/COLOR]',url,2,thumbnail)
+                addDir(name,url,2,thumbnail)
 				
 def videolinks(url,name):
         req = urllib2.Request(url)
