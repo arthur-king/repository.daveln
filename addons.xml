@@ -1,28 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.video.htvonlinevn"
-       name="htvonlinevn"
-       version="1.1.2"
-       provider-name="DaveLN">
-  <requires>
-        <import addon="xbmc.python" version="2.1.0" optional="true" />
-		<import addon="script.module.simplejson" />
-		<import addon="script.module.t0mm0.common" version="1.1.0"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource"
-            library="default.py">
-        <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary>http://www.htvonline.com.vn</summary>
-    <description>Watch free TV at http://www.htvonline.com.vn</description>
-	<disclaimer lang="en">I am not responsible for the contents of these streams, which are pulled from online provider(s). The streams do not represent my views or opinions in any way.</disclaimer>
-    <platform>all</platform>
-  </extension>
-</addon>
-
-<addon id="plugin.video.nettiviviet"
-       name="*nettiviviet"
+<addon id="plugin.video.netmovie"
+       name="*netmovie"
        version="1.0.0"
        provider-name="DaveLN">
   <requires>
@@ -35,15 +14,15 @@
         <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary>nettiviviet</summary>
-    <description>Watch free internet TV</description>
+    <summary>Movies</summary>
+    <description>Movies on internet</description>
 	<disclaimer lang="en">I am not responsible for the contents of these streams, which are pulled from online provider(s). The streams do not represent my views or opinions in any way.</disclaimer>
     <platform>all</platform>
   </extension>
 </addon>
 
-<addon id="plugin.video.phim3s.net"
-       name="*phim3s.net"
+<addon id="plugin.video.netmusic"
+       name="*netmusic"
        version="1.0.0"
        provider-name="DaveLN">
   <requires>
@@ -56,8 +35,29 @@
         <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary>phim3s.net</summary>
-    <description>Watch free movies at phim3s.net</description>
+    <summary>Music</summary>
+    <description>Music on internet</description>
+	<disclaimer lang="en">I am not responsible for the contents of these streams, which are pulled from online provider(s). The streams do not represent my views or opinions in any way.</disclaimer>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="plugin.video.nettivi"
+       name="*nettivi"
+       version="1.0.0"
+       provider-name="DaveLN">
+  <requires>
+        <import addon="xbmc.python" version="2.1.0" optional="true" />
+		<import addon="script.module.simplejson" />
+		<import addon="script.module.t0mm0.common" version="1.1.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+            library="default.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>TV</summary>
+    <description>TV on internet</description>
 	<disclaimer lang="en">I am not responsible for the contents of these streams, which are pulled from online provider(s). The streams do not represent my views or opinions in any way.</disclaimer>
     <platform>all</platform>
   </extension>
