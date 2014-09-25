@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="repository.daveln" name="DaveLN Repository" version="1.0" provider-name="DaveLN">
+<addon id="repository.daveln" name="DaveLN's Repository" version="1.0.0" provider-name="DaveLN">
 	<extension point="xbmc.addon.repository" name="DaveLN Addon Repository">
 		<info compressed="false">https://github.com/daveln/repository.daveln/raw/master/addons.xml</info>
 		<checksum>https://github.com/daveln/repository.daveln/raw/master/addons.xml.md5</checksum>
