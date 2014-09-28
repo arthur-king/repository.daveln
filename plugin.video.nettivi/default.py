@@ -33,7 +33,7 @@ haotivi    = 'http://haotivi.com/channels.json'
 vtcplay    = 'http://117.103.206.21:88/Channel/GetChannels'
 tv24vn     = 'http://www.tv24.vn'
 htvonline  = 'http://www.htvonline.com.vn/livetv'
-tokencode  = '1b#K8!3zc65ends!'
+#tokencode  = '1b#K8!3zc65ends!'
 
 def categories():
         addDir('[COLOR yellow]TV Hải Ngoại[/COLOR]   ++   [COLOR cyan]Âm Nhạc[/COLOR]   ++   [COLOR lime]Radio[/COLOR]',haingoai,7,logos + 'tivihn.png')
@@ -124,9 +124,9 @@ def tv24links(url,name):
 		response = urllib2.urlopen(req)
 		link=response.read()
 		response.close()
-		match=re.compile('\'file\': \'http([^\']*)\/playlist.m3u8')
+		match=re.compile('\'file\': \'http([^\']*)')
 		for url in match.findall(link):
-				addLink(name,('rtmpe' + url + ' swfUrl=http://tv24.vn/getflash.ashx pageUrl=http://tv24.vn/ token=' + tokencode),logos + 'tv24vn.png')
+				addLink(name,('http' + url),logos + 'tv24vn.png')
 
 def hnlinks(url,name):
         addLink('[COLOR yellow]Little Sai Gon TV[/COLOR]','http://stream.s15.cpanelservices.com/lstvlive/livestream/playlist.m3u8',logos + 'littlesaigon.png')	
