@@ -33,7 +33,7 @@ def categories():
 		addDir('[COLOR lime]phim3s.net[/COLOR]',phim3s,2,logos + 'phim3s.png')
 		
 def search():
-		if 'phim3s' in url:
+		if 'Phim3s' in name:
 				try:
 						keyb = xbmc.Keyboard('', '[COLOR yellow]Enter search text[/COLOR]')
 						keyb.doModal()
@@ -45,7 +45,7 @@ def search():
 				
 def main():
 		if 'phim3s' in url:
-				addDir('[COLOR yellow]Tìm Phim[/COLOR][B]   [COLOR lime]>[/COLOR][COLOR orange]>[/COLOR][COLOR blue]>[/COLOR][COLOR magenta]>[/COLOR]   [/B][COLOR yellow]Movie Search[/COLOR]',phim3s,1,logos + 'phim3s.png')
+				addDir('[COLOR yellow]Phim3s[/COLOR][B]   [COLOR lime]>[/COLOR][COLOR orange]>[/COLOR][COLOR blue]>[/COLOR][COLOR magenta]>[/COLOR]   [/B][COLOR yellow]Tìm Phim[/COLOR]',phim3s,1,logos + 'phim3s.png')
 				addDir('[COLOR lime]Thể Loại[/COLOR]',phim3s + 'the-loai/phim-hanh-dong',3,logos + 'phim3s.png')
 				addDir('[COLOR orange]Quốc Gia[/COLOR]',phim3s + 'quoc-gia/phim-my',3,logos + 'phim3s.png')
 				addDir('[COLOR blue]Phim Lẻ[/COLOR]',phim3s + 'danh-sach/phim-le',3,logos + 'phim3s.png')

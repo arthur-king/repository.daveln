@@ -1,3 +1,6 @@
+v 1.0.2
+Fixed Phim3s' Search
+
 v1.0.1
 update phim3s
 
