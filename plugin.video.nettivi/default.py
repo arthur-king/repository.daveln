@@ -29,7 +29,9 @@ icon       = xbmc.translatePath(os.path.join(home, 'icon.png'))
 logos      = xbmc.translatePath(os.path.join(home, 'logos\\'))
 haingoai   = 'http://206.190.130.141:1935/liveStream/'
 accessasia = 'http://live.accessasia.tv:1935/vnptg_channels/mp4:'
-haotivi    = 'http://haotivi.com/channels.json'
+haotivi    = 'https://www.dropbox.com/s/fzw8dowr6uegqxk/haotivi.json?raw=1'
+#haotivi    = 'http://haotivi.com/channels.json'
+#vtcplay    = 'https://www.dropbox.com/s/fdv8bctp5fa51r8/vtcplay.json?raw=1'
 vtcplay    = 'http://117.103.206.21:88/Channel/GetChannels'
 tv24vn     = 'http://www.tv24.vn'
 htvonline  = 'http://www.htvonline.com.vn/livetv'
@@ -60,7 +62,7 @@ def tv24():
         addDir('[COLOR orange]Truyền Hình Địa Phương[/COLOR]',tv24vn + '/LiveTV/44/ha_noi_1.html',5,logos + 'thdp.png')
  		
 def hao():						
-        addDir('[COLOR yellow]Việt Nam[/COLOR]',haotivi,9,logos + 'vn.png')
+        #addDir('[COLOR yellow]Việt Nam[/COLOR]',haotivi,9,logos + 'vn.png')
         addDir('[COLOR lime]US[/COLOR]',haotivi,9,logos + 'us.png')
         addDir('[COLOR orange]France[/COLOR]',haotivi,9,logos + 'fr.png')
         addDir('[COLOR blue]Hong Kong[/COLOR]',haotivi,9,logos + 'hk.png')
@@ -155,6 +157,8 @@ def hnlinks(url,name):
         addLink('[COLOR pink]VMusic TV[/COLOR]',haingoai + 'mtv_1/playlist.m3u8',logos + 'vmusic.png')
         addLink('[COLOR white]Viet MTV[/COLOR]','http://64.62.143.5:1935/live/donotstealmy-Stream1/playlist.m3u8?bitrate=800&q=high',logos + 'vietmtv.png')	
         addLink('[COLOR blue]Nhạc Của Tui[/COLOR]','rtmp://123.30.134.108:1935/live playpath=nctlive swfUrl=http://hktivi.net/player.swf pageUrl=http://hktivi.net/kenh/nhaccuatui.php',logos + 'nct.png')	
+        addLink('[COLOR silver]iTV[/COLOR]','http://117.103.224.73:1935/live/_definst_/ITV/ITV_live.smil/playlist.m3u8',logos + 'itv.png')
+        addLink('[COLOR orange]M[COLOR red]TV[/COLOR][/COLOR]','rtmp://85.132.78.6:1935/live/ playpath=muztv.stream swfUrl=http://zui.vn/templates/images/jwplayer.swf pageUrl=http://zui.vn/livetv/mtv-81.html',logos + 'mtv.png')
         addLink('[COLOR deeppink]Sai Gon Radio Seatlle[/COLOR]','http://206.71.180.246:8888/',logos + 'srbsradio.png')	
         addLink('[COLOR tan]Radio Bolsa[/COLOR]','http://ice7.securenetsystems.net/RBVU?type=.flv&playSessionID=724B6190-D27B-7531-5AD645183B89ED51',logos + 'radiobolsa.png')	
 
@@ -179,7 +183,7 @@ def otherlinks(url,name):
 		if 'VTC Play TV' in name:
 				match=re.compile("\"Name\":\"(.*?)\".+?\"Thumbnail2\":\"(.+?)\".+?\"Path\":\"([^\"]*)\"")
 				for name,thumbnail,url in match.findall(link):
-						addLink('[COLOR yellow]' + name + '[/COLOR]',url,thumbnail)						
+						addLink('[COLOR yellow]' + name.decode("utf-8") + '[/COLOR]',url,thumbnail)						
 		elif 'Việt Nam' in name:
 				match=re.compile("\"lang\":\"vi\".*?:\"([^\"]*)\",\"title\":\"(.+?)\"")
 				for url,name in match.findall(link):
