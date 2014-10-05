@@ -213,11 +213,12 @@ def vlinks(url,name):
 				try:
 						thumbnail=re.compile("<link rel=\"image_src\" href=\"([^\"]+)\"").findall(link)
 						match=re.compile("\"hd-2\".+?\"([^\"]+)\"").findall(link)
-						addLink(name,(match[0].replace('%3A',':').replace('%2F','/').replace('%2520',' ')),thumbnail[0])
+						addLink(name,(match[0].replace('%3A',':').replace('%2F','/').replace('%2520','%20')),thumbnail[0])
+
 				except:
 						thumbnail=re.compile("<link rel=\"image_src\" href=\"([^\"]*)\"").findall(link)
 						match=re.compile("\"file\".*?\"([^\"]*)\"").findall(link)
-						addLink(name,(match[1].replace('%3A',':').replace('%2F','/').replace('%2520',' ')),thumbnail[-1])
+						addLink(name,(match[1].replace('%3A',':').replace('%2F','/').replace('%2520','%20')),thumbnail[-1])
 		if 'nhacso' in url:	
 				thumbnail=re.compile("<link href=\"([^\"]*)\" rel=\"image_src\"").findall(link)		
 				match=re.compile("src=\"([^\"]+)\" data-setup").findall(link)		
