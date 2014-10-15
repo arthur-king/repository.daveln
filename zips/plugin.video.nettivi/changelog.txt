@@ -1,5 +1,10 @@
+v 1.0.3
+Add FPT
+Code cleanup
+Fix icon
+
 v 1.0.2
-update haotivi
+Update haotivi
 
 v 1.0.1
 Update tv24vn

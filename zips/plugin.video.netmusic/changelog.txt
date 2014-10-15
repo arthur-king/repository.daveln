@@ -1,8 +1,12 @@
+v 1.0.3
+Code cleanup
+Fix icon
+
 v 1.0.2
 Fix chiasenhac
 
 v 1.0.1
-update nhacso
+Update nhacso
 
 v 1.0.0
 Initial release

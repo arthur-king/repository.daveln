@@ -18,150 +18,256 @@ along with this program. If not, see <http://www.gnu.org/licenses/
 '''                                                                           
 
 import urllib,urllib2,re,os
-import xbmc,xbmcplugin,xbmcgui,xbmcaddon
+import xbmcplugin,xbmcgui,xbmcaddon
 
-addon      = xbmcaddon.Addon('plugin.video.netmovie')
-profile    = xbmc.translatePath(addon.getAddonInfo('profile'))
+addon = xbmcaddon.Addon('plugin.video.netmovie')
+profile = xbmc.translatePath(addon.getAddonInfo('profile'))
 mysettings = xbmcaddon.Addon(id='plugin.video.netmovie')
-home       = mysettings.getAddonInfo('path')
-fanart     = xbmc.translatePath(os.path.join(home, 'fanart.jpg'))
-icon       = xbmc.translatePath(os.path.join(home, 'icon.png'))
-logos      = xbmc.translatePath(os.path.join(home, 'logos\\'))
-phim3s     = 'http://phim3s.net/'
+home = mysettings.getAddonInfo('path')
+fanart = xbmc.translatePath(os.path.join(home, 'fanart.jpg'))
+icon = xbmc.translatePath(os.path.join(home, 'icon.png'))
+logos = xbmc.translatePath(os.path.join(home, 'logos\\'))
+phim3s = 'http://phim3s.net/'
+dchd = 'http://dangcaphd.com/'
+pgt = 'http://phimgiaitri.vn/'
 
-def categories():
-		addDir('[COLOR lime]phim3s.net[/COLOR]',phim3s,2,logos + 'phim3s.png')
-		
-def search():
-		if 'Phim3s' in name:
-				try:
-						keyb = xbmc.Keyboard('', '[COLOR yellow]Enter search text[/COLOR]')
-						keyb.doModal()
-						if (keyb.isConfirmed()):
-								searchText = urllib.quote_plus(keyb.getText())
-						url = phim3s + 'search?keyword=' + searchText
-						index(url)
-				except: pass
-				
+def categories(url):
+  addDir('[COLOR yellow]phimgiatri[/COLOR][B]   [COLOR lime]>[/COLOR][COLOR orange]>[/COLOR][COLOR blue]>[/COLOR][COLOR magenta]>[/COLOR]   [/B][COLOR yellow]Tìm Phim Bộ[/COLOR]',pgt,9,logos+'pgt.png')
+  req = urllib2.Request(url)
+  req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+  response = urllib2.urlopen(req, timeout=120)
+  link=response.read()
+  response.close() 
+  match=re.compile('<a href=\'result.php\?type=Phim Bộ(.+?)\'><span>(.+?)<\/span>').findall(link) 
+  for url,name in match:
+    addDir('[COLOR lime]'+name+'[/COLOR]',pgt+'result.php?type=Phim%20B%E1%BB%99'+url.replace(' ','%20'),7,logos+'pgt.png')					
+
+def dirs(url):
+  req = urllib2.Request(url)
+  req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+  response = urllib2.urlopen(req, timeout=120)
+  link=response.read()
+  response.close()
+  if 'phim3s' in url:
+    addDir('[COLOR yellow]phim3s[/COLOR][B]   [COLOR lime]>[/COLOR][COLOR orange]>[/COLOR][COLOR blue]>[/COLOR][COLOR magenta]>[/COLOR]   [/B][COLOR yellow]Tìm Phim[/COLOR]',phim3s,1,logos+'phim3s_1.png')
+    match=re.compile("<a href=\"the-loai([^\"]*)\" title=\"([^\"]+)\">.+?<\/a>").findall(link) 
+    for url,name in match:
+      addDir('[COLOR cyan]'+name+'[/COLOR]',('%sthe-loai%s' % (phim3s, url)),3,logos+'phim3s_2.png')					
+    match=re.compile("<a href=\"quoc-gia([^\"]*)\" title=\"([^\"]+)\">.+?<\/a>").findall(link) 
+    for url,name in match:
+      addDir('[COLOR lime]'+name+'[/COLOR]',('%squoc-gia%s' % (phim3s, url)),3,logos+'phim3s_3.png')					
+    match=re.compile("<a href=\"danh-sach([^\"]*)\" title=\"([^\"]+)\">.+?<\/a>").findall(link) 
+    for url,name in match:
+      addDir('[COLOR lightblue]'+name+'[/COLOR]',('%sdanh-sach%s' % (phim3s, url)),3,logos+'phim3s_4.png')					
+  if 'dangcaphd' in url:
+    addDir('[COLOR yellow]dangcaphd[/COLOR][B]   [COLOR lime]>[/COLOR][COLOR cyan]>[/COLOR][COLOR orange]>[/COLOR][COLOR lightgreen]>[/COLOR]   [/B][COLOR yellow]Tìm Phim[/COLOR]',dchd+'',1,logos+'dchd_1.png')
+    match=re.compile("<a href=\"([^\"]*)\" class='menutop' title='([^']+)'>").findall(link)
+    for url,name in match:
+      addDir('[COLOR lime]'+name+'[/COLOR]',url,3,logos+'dchd_2.png')  
+    match=re.compile("<li><a href=\"http:\/\/dangcaphd.com\/cat(.+?)\" title=\"([^\"]*)\">").findall(link)[0:22]
+    for url,name in match:
+      addDir('[COLOR cyan]'+name+'[/COLOR]',dchd+'cat'+url,3,logos+'dchd_3.png')
+    match=re.compile("<li><a href=\"http:\/\/dangcaphd.com\/country(.+?)\" title=\"([^\"]+)\">").findall(link)[0:12]
+    for url,name in match:
+      addDir('[COLOR orange]'+name+'[/COLOR]',dchd+'country'+url,3,logos+'dchd_1.png')
+    match=re.compile("<a href=\"http:\/\/dangcaphd.com\/movie(.+?)\"><span>(.*?)<\/span><\/a>").findall(link)[0:3]
+    for url,name in match:
+      addDir('[COLOR lightgreen]'+name+'[/COLOR]',dchd+'movie'+url,3,logos+'dchd_2.png')					
+  if 'phimgiaitri' in url:
+    addDir('[COLOR lime]phimgiatri[/COLOR][B]   [COLOR lime]>[/COLOR][COLOR orange]>[/COLOR][COLOR blue]>[/COLOR][COLOR magenta]>[/COLOR]   [/B][COLOR lime]Tìm Phim Lẻ[/COLOR]',pgt,1,logos+'pgt.png')
+    match=re.compile('<a href=\'result.php\?type=Phim Lẻ(.+?)\'><span>(.+?)<\/span>').findall(link)
+    for url,name in match:
+      addDir('[COLOR yellow]'+name+'[/COLOR]',pgt+'result.php?type=Phim%20L%E1%BA%BB'+url.replace(' ','%20'),3,logos+'pgt.png')	
+
+def pgtr():
+  #addDir('[COLOR cyan]Phimgiaitri[/COLOR]',pgt,5,logos+'pgt.png')
+  req = urllib2.Request(url)
+  req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+  response = urllib2.urlopen(req, timeout=120)
+  link=response.read()
+  response.close()
+  match=re.compile('<li class="has-sub"><a href=\'#\'><span>(.+?)<\/span><\/a>').findall(link)[0]  
+  addDir('[COLOR yellow]'+match+'[/COLOR]',pgt,2,logos+'pgt.png')			
+  match=re.compile('<li class="has-sub"><a href=\'#\'><span>(.+?)<\/span><\/a>').findall(link)[1]		
+  addDir('[COLOR lime]'+match+'[/COLOR]',pgt,6,logos+'pgt.png')	
+ 
 def main():
-		if 'phim3s' in url:
-				addDir('[COLOR yellow]Phim3s[/COLOR][B]   [COLOR lime]>[/COLOR][COLOR orange]>[/COLOR][COLOR blue]>[/COLOR][COLOR magenta]>[/COLOR]   [/B][COLOR yellow]Tìm Phim[/COLOR]',phim3s,1,logos + 'phim3s.png')
-				addDir('[COLOR lime]Thể Loại[/COLOR]',phim3s + 'the-loai/phim-hanh-dong',3,logos + 'phim3s.png')
-				addDir('[COLOR orange]Quốc Gia[/COLOR]',phim3s + 'quoc-gia/phim-my',3,logos + 'phim3s.png')
-				addDir('[COLOR blue]Phim Lẻ[/COLOR]',phim3s + 'danh-sach/phim-le',3,logos + 'phim3s.png')
-				addDir('[COLOR magenta]Phim Bộ[/COLOR]',phim3s + 'danh-sach/phim-bo',3,logos + 'phim3s.png')
-				addDir('[COLOR cyan]Phim Chiếu Rạp[/COLOR]',phim3s + 'danh-sach/phim-chieu-rap',3,logos + 'phim3s.png')
-				addDir('[COLOR pink]Phim Mới[/COLOR]',phim3s + 'danh-sach/phim-moi',3,logos + 'phim3s.png')
-				addDir('[COLOR coral]Phim Thuyết Minh[/COLOR]',phim3s + 'danh-sach/phim-thuyet-minh',4,logos + 'phim3s.png')
-				
-def sub():
-		if 'phim3s' in url:
-				if 'the-loai' in url:
-						addDir('[COLOR yellow]Phim Âm Nhạc[/COLOR]',phim3s + 'the-loai/phim-am-nhac',4,logos + 'phim3s.png')
-						addDir('[COLOR lime]Phim Chiến Tranh[/COLOR]',phim3s + 'the-loai/phim-chien-tranh',4,logos + 'phim3s.png')
-						addDir('[COLOR orange]Phim Cổ Trang[/COLOR]',phim3s + 'the-loai/phim-co-trang',4,logos + 'phim3s.png')
-						addDir('[COLOR blue]Phim Hài Hước[/COLOR]',phim3s + 'the-loai/phim-hai-huoc',4,logos + 'phim3s.png')
-						addDir('[COLOR magenta]Phim Hành Động[/COLOR]',phim3s + 'the-loai/phim-hanh-dong',4,logos + 'phim3s.png')
-						addDir('[COLOR tan]Phim Hình Sự[/COLOR]',phim3s + 'the-loai/phim-hinh-su',4,logos + 'phim3s.png')
-						addDir('[COLOR chocolate]Phim Hoạt Hình[/COLOR]',phim3s + 'the-loai/phim-hoat-hinh',4,logos + 'phim3s.png')
-						addDir('[COLOR cyan]Phim Kinh Dị[/COLOR]',phim3s + 'the-loai/phim-kinh-di',4,logos + 'phim3s.png')
-						addDir('[COLOR violet]Phim Phiêu Lưu[/COLOR]',phim3s + 'the-loai/phim-phieu-luu',4,logos + 'phim3s.png')
-						addDir('[COLOR gold]Phim Viễn Tưởng[/COLOR]',phim3s + 'the-loai/phim-vien-tuong',4,logos + 'phim3s.png')
-						addDir('[COLOR white]Phim Võ Thuật[/COLOR]',phim3s + 'the-loai/phim-vo-thuat',4,logos + 'phim3s.png')
-						addDir('[COLOR silver]Phim Tâm Lý[/COLOR]',phim3s + 'the-loai/phim-tam-ly',4,logos + 'phim3s.png')
-						addDir('[COLOR olive]Phim Thần Thoại[/COLOR]',phim3s + 'the-loai/phim-than-thoai',4,logos + 'phim3s.png')
-						addDir('[COLOR pink]Phim TV Show[/COLOR]',phim3s + 'the-loai/phim-tv-show',4,logos + 'phim3s.png')
-				if 'quoc-gia' in url:
-						addDir('[COLOR white]Phim Anh[/COLOR]',phim3s + 'quoc-gia/phim-anh',4,logos + 'phim3s.png')
-						addDir('[COLOR gold]Phim Ấn Độ[/COLOR]',phim3s + 'quoc-gia/phim-an-do',4,logos + 'phim3s.png')
-						addDir('[COLOR violet]Phim Hàn Quốc[/COLOR]',phim3s + 'quoc-gia/phim-han-quoc',4,logos + 'phim3s.png')
-						addDir('[COLOR cyan]Phim Hồng Kông[/COLOR]',phim3s + 'quoc-gia/phim-hong-kong',4,logos + 'phim3s.png')
-						addDir('[COLOR chocolate]Phim Khác[/COLOR]',phim3s + 'quoc-gia/phim-khac',4,logos + 'phim3s.png')
-						addDir('[COLOR tan]Phim Mỹ[/COLOR]',phim3s + 'quoc-gia/phim-my',4,logos + 'phim3s.png')
-						addDir('[COLOR magenta]Phim Nhật Bản[/COLOR]',phim3s + 'quoc-gia/phim-nhat-ban',4,logos + 'phim3s.png')
-						addDir('[COLOR blue]Phim Pháp[/COLOR]',phim3s + 'quoc-gia/phim-phap',4,logos + 'phim3s.png')
-						addDir('[COLOR orange]Phim Thái Lan[/COLOR]',phim3s + 'quoc-gia/phim-thai-lan',4,logos + 'phim3s.png')
-						addDir('[COLOR lime]Phim Trung Quốc[/COLOR]',phim3s + 'quoc-gia/phim-trung-quoc',4,logos + 'phim3s.png')
-						addDir('[COLOR yellow]Phim Việt Nam[/COLOR]',phim3s + 'quoc-gia/phim-viet-nam',4,logos + 'phim3s.png')
-				if 'phim-le' in url:
-						addDir('[COLOR lime]Toàn Bộ Phim Lẻ[/COLOR]',phim3s + 'danh-sach/phim-le',4,logos + 'phim3s.png')
-						addDir('[COLOR silver]Phim Lẻ 2014[/COLOR]',phim3s + 'danh-sach/phim-le/?year=2014',4,logos + 'phim3s.png')
-						addDir('[COLOR violet]Phim Lẻ 2013[/COLOR]',phim3s + 'danh-sach/phim-le/?year=2013',4,logos + 'phim3s.png')
-						addDir('[COLOR cyan]Phim Lẻ 2012[/COLOR]',phim3s + 'danh-sach/phim-le/?year=2012',4,logos + 'phim3s.png')
-				if 'phim-bo' in url:
-						addDir('[COLOR lime]Toàn Bộ Phim Bộ[/COLOR]',phim3s + 'danh-sach/phim-bo',4,logos + 'phim3s.png')
-						addDir('[COLOR silver]Phim Bộ 2014[/COLOR]',phim3s + 'danh-sach/phim-bo/?year=2014',4,logos + 'phim3s.png')
-						addDir('[COLOR violet]Phim Bộ 2013[/COLOR]',phim3s + 'danh-sach/phim-bo/?year=2013',4,logos + 'phim3s.png')
-						addDir('[COLOR cyan]Phim Bộ 2012[/COLOR]',phim3s + 'danh-sach/phim-bo/?year=2012',4,logos + 'phim3s.png')
-				if 'phim-chieu-rap' in url:
-						addDir('[COLOR lime]Toàn Bộ Phim Chiếu Rạp[/COLOR]',phim3s + 'danh-sach/phim-chieu-rap',4,logos + 'phim3s.png')
-						addDir('[COLOR silver]Phim Chiếu Rạp 2014[/COLOR]',phim3s + 'danh-sach/phim-chieu-rap/?year=2014',4,logos + 'phim3s.png')
-						addDir('[COLOR violet]Phim Chiếu Rạp 2013[/COLOR]',phim3s + 'danh-sach/phim-chieu-rap/?year=2013',4,logos + 'phim3s.png')
-						addDir('[COLOR cyan]Phim Chiếu Rạp 2012[/COLOR]',phim3s + 'danh-sach/phim-chieu-rap/?year=2012',4,logos + 'phim3s.png')
-				if 'phim-moi' in url:
-						addDir('[COLOR lime]Toàn Bộ Phim Mới[/COLOR]',phim3s + 'danh-sach/phim-moi',4,logos + 'phim3s.png')
-						addDir('[COLOR silver]Phim Mới 2014[/COLOR]',phim3s + 'danh-sach/phim-2014',4,logos + 'phim3s.png')
-						addDir('[COLOR violet]Phim Mới 2013[/COLOR]',phim3s + 'danh-sach/phim-2013',4,logos + 'phim3s.png')
-						addDir('[COLOR cyan]Phim Mới 2012[/COLOR]',phim3s + 'danh-sach/phim-2012',4,logos + 'phim3s.png')
-				
+  addDir('[COLOR yellow]phim3s.net[/COLOR]',phim3s,2,logos+'phim3s_1.png')
+  addDir('[COLOR lime]dangcaphd.com[/COLOR]',dchd,2,logos+'dchd_1.png')
+  addDir('[COLOR cyan]phimgiaitri.vn[/COLOR]',pgt,5,logos+'pgt.png')   
+
+def plist(url):
+  req = urllib2.Request(url)
+  req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+  response = urllib2.urlopen(req, timeout=120)
+  link=response.read()
+  response.close() 
+  match=re.compile('href=\'([^\']*).html\'>\s*<img style=.+?src=(.+?) ><div class=\'text\'>\s*<p>.+?<\/p>\s*<\/div>.+?>([^<]*)\s*<\/').findall(link)
+  for url,thumbnail,name in match:
+    addDir('[COLOR lime]'+name+'[/COLOR]',pgt+url+'/Tap-1.html',8,pgt+thumbnail)				
+  match=re.compile("<a  href='(.+?)'>(\d+)  <\/a>").findall(link)
+  for url,name in match:
+    addDir('[COLOR yellow]Trang '+name+'[/COLOR]',pgt+url.replace(' ','%20'),7,logos+'pgt.png')
+	  
+def inquiry():
+  try:
+    keyb = xbmc.Keyboard('', '[COLOR lime]Enter search text[/COLOR]')
+    keyb.doModal()
+    if (keyb.isConfirmed()):
+      searchText = urllib.quote_plus(keyb.getText())
+    url = pgt+'result.php?type=search&keywords='+searchText
+    plist(url)
+  except: pass
+   
 def index(url):
-		req = urllib2.Request(url)
-		req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-		response = urllib2.urlopen(req, timeout=90)
-		link=response.read()
-		response.close()
-		if 'phim3s' in url:
-				match=re.compile("<div class=\"inner\"><a href=\"(.*?)\" title=\"([^\"]*)\"><img src=\"(.+?)\"").findall(link)
-				for url,name,thumbnail in match:
-						addDir('[COLOR yellow]' + name + '[/COLOR]',('%s%sxem-phim' % (phim3s, url)),6,thumbnail)					
-				match=re.compile("<span class=\"item\"><a href=\"([^\"]*)\">(\d+)<\/a><\/span>").findall(link)
-				for url,name in match:
-						addDir('[COLOR lime]Trang ' + name + '[/COLOR]',('%s%s' % (phim3s, url)),4,logos + 'phim3s.png')					
-						
+  req = urllib2.Request(url)
+  req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+  response = urllib2.urlopen(req, timeout=120)
+  link=response.read()
+  response.close()
+  if 'phim3s' in url:
+    match=re.compile("<div class=\"inner\"><a href=\"(.*?)\" title=\"([^\"]*)\"><img src=\"(.+?)\"").findall(link)
+    for url,name,thumbnail in match:
+      addDir('[COLOR yellow]'+name+'[/COLOR]',('%s%sxem-phim' % (phim3s, url)),4,thumbnail)					
+    match=re.compile("<span class=\"item\"><a href=\"([^\"]*)\">(\d+)<\/a><\/span>").findall(link)
+    for url,name in match:
+      addDir('[COLOR lime]Trang '+name+'[/COLOR]',('%s%s' % (phim3s, url)),3,logos+'phim3s_4.png')					
+  if 'dangcaphd' in url:
+    match=re.compile('<a href="(.+?)" title="(.+?)">\s*<img src="(.+?)"').findall(link)
+    for url,name,thumbnail in match:
+      addDir('[COLOR yellow]'+name+'[/COLOR]',(url.replace('movie','watch')),4,thumbnail) 
+    match=re.compile("<a href=\"([^\"]+)\">&lt;&lt;<\/a>").findall(link)
+    for url in match:
+      addDir('[COLOR cyan]Trang Đầu Tiên[/COLOR]',url.replace('amp;',''),3,logos+'dchd_1.png')
+    #match=re.compile("<a href=\"([^\"]*)\">&lt;<\/a>").findall(link)
+    #for url in match:
+      #addDir('[COLOR cyan]Trang Kế Trước[/COLOR]',url.replace('amp;',''),3,logos+'dchd_3.png')	
+    match=re.compile("<a href=\"([^>]*)\">(\d+)<\/a>").findall(link)
+    for url,name in match:
+      addDir('[COLOR lime]Trang '+name+'[/COLOR]',url.replace('amp;',''),3,logos+'dchd_2.png')
+    #match=re.compile("<a href=\"(.+?)\">&gt;<\/a>").findall(link)
+    #for url in match:
+      #addDir('[COLOR blue]Trang Kế Tiếp[/COLOR]',url.replace('amp;',''),3,logos+'dchd_1.png')
+    match=re.compile("<a href=\"([^\"]*)\">&gt;&gt;<\/a>").findall(link)
+    for url in match:
+      addDir('[COLOR red]Trang Cuối Cùng[/COLOR]',url.replace('amp;',''),3,logos+'dchd_3.png')
+  if 'phimgiaitri' in url:
+    match=re.compile('<a style=\'text-decoration:none\' href=\'([^\']*).html\'>\s*<img style=.+?src=(.+?) ><table style.+?:0px\'>(.+?)\s*<\/font>').findall(link)
+    for url,thumbnail,name in match:
+      addDir('[COLOR yellow]'+name+'[/COLOR]',pgt+url+'/Tap-1.html',4,pgt+thumbnail)					
+    match=re.compile("<a  href='(.+?)'>(\d+)  <\/a>").findall(link)
+    for url,name in match:
+      addDir('[COLOR lime]Trang '+name+'[/COLOR]',pgt+url.replace(' ','%20'),3,logos + 'pgt.png')					
+  
 def vlinks(url,name):
-		req = urllib2.Request(url)
-		req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
-		response = urllib2.urlopen(req, timeout=90)
-		link=response.read()
-		response.close()
-		if 'phim3s' in url:
-				thumbnail=re.compile("<meta property=\"og:image\" content=\"([^\"]*)\"").findall(link)[0]		
-				match=re.compile("a data-type=\"watch\" data-episode-id.+?href=\"([^\"]*)\" title=\"(.*?)\"").findall(link)
-				for url,title in match:
-						addLink(('%s   -   %s' % ('[COLOR lime]' + title + '[/COLOR]',name )),('%s%svideo.mp4' % (phim3s, url)),thumbnail)		
+  req = urllib2.Request(url)
+  req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+  response = urllib2.urlopen(req, timeout=120)
+  link=response.read()
+  response.close()
+  if 'phim3s' in url:
+    thumbnail=re.compile("<meta property=\"og:image\" content=\"([^\"]*)\"").findall(link)[0]		
+    match=re.compile("a data-type=\"watch\" data-episode-id.+?href=\"([^\"]*)\" title=\"(.*?)\"").findall(link)
+    for url,title in match:
+      addLink(('%s   -   %s' % ('[COLOR lime]'+title+'[/COLOR]',name )),('%s%svideo.mp4' % (phim3s, url)),thumbnail)		
+  if 'dangcaphd' in url:
+    try:
+	  thumbnail=re.compile('<link rel="image_src" href="(.+?)"').findall(link)		
+	  match=re.compile('<a _episode="1" _link="(.+?)_\d_\d+.mp4"').findall(link)
+	  addLink(name,match[0]+'.mp4',thumbnail[0])
+    except:
+	  thumbnail=re.compile('<link rel="image_src" href="(.+?)"').findall(link)		
+	  match=re.compile('<a _episode="1" _link="(.+?)"').findall(link)
+	  addLink(name,match[-1],thumbnail[0])
+  if 'phimgiaitri' in url:
+    thumbnail=re.compile("<meta property=\"og:image\" content=\"(.+?)\"").findall(link)[0]		
+    match=re.compile('file: "rtmpe:.+?phimle(.+?)"').findall(link)
+    for url in match:
+      addLink(name,('http://phimgiaitri.vn/phimtv/phimle' + url),thumbnail)		
+	  
+def search():
+  if 'phim3s' in name:
+    try:
+      keyb = xbmc.Keyboard('', '[COLOR yellow]Enter search text[/COLOR]')
+      keyb.doModal()
+      if (keyb.isConfirmed()):
+        searchText = urllib.quote_plus(keyb.getText())
+      url = phim3s+'search?keyword='+searchText
+      index(url)
+    except: pass
+  if 'dangcaphd' in name:
+    try:
+      keyb = xbmc.Keyboard('', '[COLOR yellow]Enter search text[/COLOR]')
+      keyb.doModal()
+      if (keyb.isConfirmed()):
+        searchText = urllib.quote_plus(keyb.getText())
+      url = dchd+'movie/search.html?key='+searchText+'&search_movie=0'
+      index(url)
+    except: pass
+  if 'Tìm Phim Lẻ' in name:
+    try:
+      keyb = xbmc.Keyboard('', '[COLOR yellow]Enter search text[/COLOR]')
+      keyb.doModal()
+      if (keyb.isConfirmed()):
+        searchText = urllib.quote_plus(keyb.getText())
+      url = pgt+'result.php?type=search&keywords='+searchText
+      index(url)
+    except: pass
 						
 def get_params():
-        param=[]
-        paramstring=sys.argv[2]
-        if len(paramstring)>=2:
-                params=sys.argv[2]
-                cleanedparams=params.replace('?','')
-                if (params[len(params)-1]=='/'):
-                        params=params[0:len(params)-2]
-                pairsofparams=cleanedparams.split('&')
-                param={}
-                for i in range(len(pairsofparams)):
-                        splitparams={}
-                        splitparams=pairsofparams[i].split('=')
-                        if (len(splitparams))==2:
-                                param[splitparams[0]]=splitparams[1]
-                                
-        return param
+  param=[]
+  paramstring=sys.argv[2]
+  if len(paramstring)>=2:
+    params=sys.argv[2]
+    cleanedparams=params.replace('?','')
+    if (params[len(params)-1]=='/'):
+      params=params[0:len(params)-2]
+    pairsofparams=cleanedparams.split('&')
+    param={}
+    for i in range(len(pairsofparams)):
+      splitparams={}
+      splitparams=pairsofparams[i].split('=')
+      if (len(splitparams))==2:
+        param[splitparams[0]]=splitparams[1]
+  return param
+    
+def blinks(url,name):
+  req = urllib2.Request(url)
+  req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+  response = urllib2.urlopen(req, timeout=120)
+  link=response.read()
+  response.close()
+  thumbnail=re.compile("<meta property=\"og:image\" content=\"(.+?)\"").findall(link)[0]
+  match=re.compile('file: "rtmpe:.+?phimbo(.+?)"').findall(link)
+  for url in match:
+    addLink(name,('http://phimgiaitri.vn:83/phimtv/phimbo' + url),thumbnail)
 
 def addLink(name,url,iconimage):
-        ok=True
-        liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
-        liz.setInfo( type="Video", infoLabels={ "Title": name } )
-        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=liz)
-        return ok
+  ok=True
+  liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
+  liz.setInfo( type="Video", infoLabels={ "Title": name } )
+  ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=liz)
+  return ok
+				
+def eps(url,name):
+  req = urllib2.Request(url)
+  req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+  response = urllib2.urlopen(req, timeout=120)
+  link=response.read()
+  response.close() 
+  thumbnail=re.compile("<meta property=\"og:image\" content=\"(.+?)\"").findall(link)
+  addDir('[COLOR yellow]Tập 1  -  [/COLOR]'+name,url,10,thumbnail[0])
+  match=re.compile("<a href=\"(.+?)\" page=(\d+)>").findall(link)
+  for url,title in match:
+    addDir('[COLOR yellow]Tập '+title+'  -  '+name+'[/COLOR]',url,10,thumbnail[0])				
 
 def addDir(name,url,mode,iconimage):
-        u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
-        ok=True
-        liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
-        liz.setInfo( type="Video", infoLabels={ "Title": name } )
-        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
-        return ok
+  u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
+  ok=True
+  liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
+  liz.setInfo( type="Video", infoLabels={ "Title": name } )
+  ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
+  return ok
                       
 params=get_params()
 url=None
@@ -169,43 +275,62 @@ name=None
 mode=None
 
 try:
-        url=urllib.unquote_plus(params["url"])
+  url=urllib.unquote_plus(params["url"])
 except:
-        pass
+  pass
 try:
-        name=urllib.unquote_plus(params["name"])
+  name=urllib.unquote_plus(params["name"])
 except:
-        pass
+  pass
 try:
-        mode=int(params["mode"])
+  mode=int(params["mode"])
 except:
-        pass
+  pass
 
 print "Mode: "+str(mode)
 print "URL: "+str(url)
 print "Name: "+str(name)
 
 if mode==None or url==None or len(url)<1:
-        print ""
-        categories()
+  print ""
+  main()
 
 elif mode==1:
-        search()
+  search()
 		
 elif mode==2:
-        print ""
-        main()
-		
-elif mode==3:
-        print ""
-        sub()
+  print ""+url
+  dirs(url)
 				
-elif mode==4:
-        print ""+url
-        index(url)
+elif mode==3:
+  print ""+url
+  index(url)
         
+elif mode==4:
+  print ""+url
+  vlinks(url,name)
+
+elif mode==5:
+  print ""
+  pgtr()
+  
 elif mode==6:
-        print ""+url
-        vlinks(url,name)
-		
+  print ""+url
+  categories(url)
+  
+elif mode==7:
+  print ""+url
+  plist(url)
+  
+elif mode==8:
+  print ""+url
+  eps(url,name)
+  
+elif mode==9:
+  inquiry()
+  
+elif mode==10:
+  print ""+url
+  blinks(url,name)
+  
 xbmcplugin.endOfDirectory(int(sys.argv[1]))

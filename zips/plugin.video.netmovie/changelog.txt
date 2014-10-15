@@ -1,8 +1,14 @@
-v 1.0.2
-Fix Phim3s
+v 1.0.3
+Add phimgiaitri
+Add dangcaphd
+Code cleanup
+Fix icon
 
-v1.0.1
-update phim3s
+v 1.0.2
+Fixed Phim3s' Search
+
+v 1.0.1
+Update phim3s
 
 v 1.0.0
 Initial release
