@@ -1,3 +1,6 @@
+v 1.0.4
+Play link directly
+
 v 1.0.3
 Add phimgiaitri
 Add dangcaphd

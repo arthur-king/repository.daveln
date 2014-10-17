@@ -78,6 +78,13 @@ def dirs(url):
     match=re.compile('<a href=\'result.php\?type=Phim Lẻ(.+?)\'><span>(.+?)<\/span>').findall(link)
     for url,name in match:
       addDir('[COLOR yellow]'+name+'[/COLOR]',pgt+'result.php?type=Phim%20L%E1%BA%BB'+url.replace(' ','%20'),3,logos+'pgt.png')	
+	  	
+def add_Link(name,url,iconimage):
+  u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode=11"  
+  liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
+  liz.setInfo( type="Video", infoLabels={ "Title": name } )
+  liz.setProperty('IsPlayable', 'true')  
+  ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz)  
 
 def pgtr():
   #addDir('[COLOR cyan]Phimgiaitri[/COLOR]',pgt,5,logos+'pgt.png')
@@ -135,10 +142,10 @@ def index(url):
   if 'dangcaphd' in url:
     match=re.compile('<a href="(.+?)" title="(.+?)">\s*<img src="(.+?)"').findall(link)
     for url,name,thumbnail in match:
-      addDir('[COLOR yellow]'+name+'[/COLOR]',(url.replace('movie','watch')),4,thumbnail) 
+      add_Link('[COLOR yellow]'+name+'[/COLOR]',(url.replace('movie','watch')),thumbnail) 
     match=re.compile("<a href=\"([^\"]+)\">&lt;&lt;<\/a>").findall(link)
     for url in match:
-      addDir('[COLOR cyan]Trang Đầu Tiên[/COLOR]',url.replace('amp;',''),3,logos+'dchd_1.png')
+      addDir('[COLOR cyan]Trang Đầu[/COLOR]',url.replace('amp;',''),3,logos+'dchd_1.png')
     #match=re.compile("<a href=\"([^\"]*)\">&lt;<\/a>").findall(link)
     #for url in match:
       #addDir('[COLOR cyan]Trang Kế Trước[/COLOR]',url.replace('amp;',''),3,logos+'dchd_3.png')	
@@ -150,11 +157,11 @@ def index(url):
       #addDir('[COLOR blue]Trang Kế Tiếp[/COLOR]',url.replace('amp;',''),3,logos+'dchd_1.png')
     match=re.compile("<a href=\"([^\"]*)\">&gt;&gt;<\/a>").findall(link)
     for url in match:
-      addDir('[COLOR red]Trang Cuối Cùng[/COLOR]',url.replace('amp;',''),3,logos+'dchd_3.png')
+      addDir('[COLOR red]Trang Cuối[/COLOR]',url.replace('amp;',''),3,logos+'dchd_3.png')
   if 'phimgiaitri' in url:
     match=re.compile('<a style=\'text-decoration:none\' href=\'([^\']*).html\'>\s*<img style=.+?src=(.+?) ><table style.+?:0px\'>(.+?)\s*<\/font>').findall(link)
     for url,thumbnail,name in match:
-      addDir('[COLOR yellow]'+name+'[/COLOR]',pgt+url+'/Tap-1.html',4,pgt+thumbnail)					
+      add_Link('[COLOR yellow]'+name+'[/COLOR]',pgt+url+'/Tap-1.html',pgt+thumbnail)					
     match=re.compile("<a  href='(.+?)'>(\d+)  <\/a>").findall(link)
     for url,name in match:
       addDir('[COLOR lime]Trang '+name+'[/COLOR]',pgt+url.replace(' ','%20'),3,logos + 'pgt.png')					
@@ -165,25 +172,27 @@ def vlinks(url,name):
   response = urllib2.urlopen(req, timeout=120)
   link=response.read()
   response.close()
-  if 'phim3s' in url:
-    thumbnail=re.compile("<meta property=\"og:image\" content=\"([^\"]*)\"").findall(link)[0]		
-    match=re.compile("a data-type=\"watch\" data-episode-id.+?href=\"([^\"]*)\" title=\"(.*?)\"").findall(link)
-    for url,title in match:
-      addLink(('%s   -   %s' % ('[COLOR lime]'+title+'[/COLOR]',name )),('%s%svideo.mp4' % (phim3s, url)),thumbnail)		
+  thumbnail=re.compile("<meta property=\"og:image\" content=\"([^\"]*)\"").findall(link)[0]		
+  match=re.compile("a data-type=\"watch\" data-episode-id.+?href=\"([^\"]*)\" title=\"(.*?)\"").findall(link)
+  for url,title in match:
+    addLink(('%s   -   %s' % ('[COLOR lime]'+title+'[/COLOR]',name )),('%s%svideo.mp4' % (phim3s, url)),thumbnail)		
+	  
+def resolve_url(url):
+  req = urllib2.Request(url)
+  req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+  response = urllib2.urlopen(req, timeout=120)
+  link=response.read()
+  response.close()
   if 'dangcaphd' in url:
-    try:
-	  thumbnail=re.compile('<link rel="image_src" href="(.+?)"').findall(link)		
-	  match=re.compile('<a _episode="1" _link="(.+?)_\d_\d+.mp4"').findall(link)
-	  addLink(name,match[0]+'.mp4',thumbnail[0])
-    except:
-	  thumbnail=re.compile('<link rel="image_src" href="(.+?)"').findall(link)		
-	  match=re.compile('<a _episode="1" _link="(.+?)"').findall(link)
-	  addLink(name,match[-1],thumbnail[0])
-  if 'phimgiaitri' in url:
-    thumbnail=re.compile("<meta property=\"og:image\" content=\"(.+?)\"").findall(link)[0]		
-    match=re.compile('file: "rtmpe:.+?phimle(.+?)"').findall(link)
-    for url in match:
-      addLink(name,('http://phimgiaitri.vn/phimtv/phimle' + url),thumbnail)		
+    try:	
+	  mediaUrl=re.compile('<a _episode="1" _link="(.+?)_\d_\d+.mp4"').findall(link)[0]+'.mp4'
+    except:		
+	  mediaUrl=re.compile('<a _episode="1" _link="(.+?)"').findall(link)[0]
+  if 'phimgiaitri' in url:	
+    mediaUrl='http://phimgiaitri.vn/phimtv/phimle'+re.compile('file: "rtmpe:.+?phimle(.+?)"').findall(link)[0]
+  item = xbmcgui.ListItem(path=mediaUrl)
+  xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)	  
+  return
 	  
 def search():
   if 'phim3s' in name:
@@ -230,17 +239,24 @@ def get_params():
       if (len(splitparams))==2:
         param[splitparams[0]]=splitparams[1]
   return param
-    
-def blinks(url,name):
+
+def get_link(name,url,iconimage):
+  u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode=12"  
+  liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
+  liz.setInfo( type="Video", infoLabels={ "Title": name } )
+  liz.setProperty('IsPlayable', 'true')  
+  ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz) 
+
+def url_resolver(url):
   req = urllib2.Request(url)
   req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
   response = urllib2.urlopen(req, timeout=120)
   link=response.read()
   response.close()
-  thumbnail=re.compile("<meta property=\"og:image\" content=\"(.+?)\"").findall(link)[0]
-  match=re.compile('file: "rtmpe:.+?phimbo(.+?)"').findall(link)
-  for url in match:
-    addLink(name,('http://phimgiaitri.vn:83/phimtv/phimbo' + url),thumbnail)
+  mediaUrl='http://phimgiaitri.vn:83/phimtv/phimbo'+re.compile('file: "rtmpe:.+?phimbo(.+?)"').findall(link)[0]
+  item = xbmcgui.ListItem(path=mediaUrl)
+  xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)	  
+  return
 
 def addLink(name,url,iconimage):
   ok=True
@@ -256,11 +272,11 @@ def eps(url,name):
   link=response.read()
   response.close() 
   thumbnail=re.compile("<meta property=\"og:image\" content=\"(.+?)\"").findall(link)
-  addDir('[COLOR yellow]Tập 1  -  [/COLOR]'+name,url,10,thumbnail[0])
+  get_link('[COLOR yellow]Tập 1  -  [/COLOR]'+name,url,thumbnail[0])
   match=re.compile("<a href=\"(.+?)\" page=(\d+)>").findall(link)
   for url,title in match:
-    addDir('[COLOR yellow]Tập '+title+'  -  '+name+'[/COLOR]',url,10,thumbnail[0])				
-
+    get_link('[COLOR yellow]Tập '+title+'  -  '+name+'[/COLOR]',url,thumbnail[0])
+  
 def addDir(name,url,mode,iconimage):
   u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
   ok=True
@@ -332,5 +348,13 @@ elif mode==9:
 elif mode==10:
   print ""+url
   blinks(url,name)
+  
+elif mode==11:
+  print ""+url
+  resolve_url(url)
+
+elif mode==12:
+  print ""+url
+  url_resolver(url)  
   
 xbmcplugin.endOfDirectory(int(sys.argv[1]))

@@ -35,15 +35,19 @@ fptplay = 'http://fptplay.net/'
 tv24vn = 'http://www.tv24.vn'
 
 def HD():
+  add_Link('[COLOR lime]National Geographic HD[/COLOR]','http://www.htvonline.com.vn/livetv/national-geographic-3132366E61.html',logos+'natgeohd.png')
+  add_Link('[COLOR lime]Discovery World HD[/COLOR]','http://www.htvonline.com.vn/livetv/discovery-hd-3132336E61.html',logos+'dischd.png')
+  add_Link('[COLOR lime]FOX SPORTS PLUS HD[/COLOR]','http://www.htvonline.com.vn/livetv/espn-hd-3132346E61.html',logos+'foxsporthd.png')	  
   req = urllib2.Request(htvonline)
   req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
   response = urllib2.urlopen(req, timeout=90)
   link=response.read()
   response.close()
   match=re.compile("<a class=\"mh-grids5-img\" href=\"([^\"]*)\" title=\"(.+?)\">\s.*?\s*<img src=\"(.*?)\"").findall(link)
-  for url,name,thumbnail in match:
-    if ' HD' in name or 'NATIONAL GEOGRAPHIC' in name:
-	  addDir('[COLOR cyan]'+name+'[/COLOR]',url,7,thumbnail)
+  for url,name,thumbnail in match:	
+    if 'HTV7' in name or 'HTV9' in name or ' HD' in name or 'htv2-31336E61' in url:
+	  add_Link('[COLOR cyan]'+name+'[/COLOR]',url,thumbnail)
+  add_Link('[COLOR cyan]FBNC HD[/COLOR]','http://www.htvonline.com.vn/livetv/fbnc-34306E61.html',logos+'fnbchd.png')  	  	  
   req = urllib2.Request(vtcplay)
   req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
   response = urllib2.urlopen(req, timeout=90)
@@ -102,17 +106,17 @@ def index(url):
 	match=re.compile("<SPAN id=\".+?\"><a href='(.+?)'><img src='(.+?)' onmouseover=\"this.src='http:\/\/tv24.vn\/WebMedia\/Channels\/\d+\/(.+?).png'").findall(link)
 	for url,thumbnail,name in match:
 	  if 'vtv' in name:
-	    addDir('[COLOR yellow][UPPERCASE]'+name+'[/UPPERCASE][/COLOR]',('%s%s' % (tv24vn, url)),7,thumbnail)	  
+	    add_Link('[COLOR yellow][UPPERCASE]'+name+'[/UPPERCASE][/COLOR]',('%s%s' % (tv24vn, url)),thumbnail)	  
 	  else:	  
-	    addDir('[COLOR lime][UPPERCASE]'+name.replace('b','')+'[/UPPERCASE][/COLOR]',('%s%s' % (tv24vn, url)),7,thumbnail)
+	    add_Link('[COLOR lime][UPPERCASE]'+name.replace('b','')+'[/UPPERCASE][/COLOR]',('%s%s' % (tv24vn, url)),thumbnail)
   if 'htvonline' in url:
 	match=re.compile("<a class=\"mh-grids5-img\" href=\"([^\"]*)\" title=\"(.+?)\">\s.*?\s*<img src=\"(.*?)\"").findall(link)
 	for url,name,thumbnail in match:
-	  addDir('[COLOR yellow]'+name+'[/COLOR]',url,7,thumbnail)
+	  add_Link('[COLOR yellow]'+name+'[/COLOR]',url,thumbnail)
   if 'fptplay' in url:
 	match=re.compile("channel=\"(.*?)\" href=\"(.+?)\" data=\".+?\">\s+<img src=\"(.*?)\"").findall(link)
 	for name,url,thumbnail in match:
-	  addDir('[COLOR lime]'+name+'[/COLOR]',fptplay+url,8,thumbnail)						
+	  add_Link('[COLOR lime]'+name+'[/COLOR]',fptplay+url,thumbnail)						
 	  
 def get_params():
   param=[]
@@ -136,17 +140,8 @@ def vlinks(url,name):
   req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
   response = urllib2.urlopen(req, timeout=90)
   link=response.read()
-  response.close()
-  if 'htvonline' in url:
-    thumbnail=re.compile("<meta property=\"og:image\" content=\"([^\"]*)\"").findall(link)		
-    match=re.compile("file: \"([^\"]*)\"").findall(link)
-    for url in match:
-      addLink(name,url,thumbnail[-1])							
-  elif 'tv24' in url:
-    match=re.compile('\'file\': \'http([^\']*)').findall(link)
-    for url in match:
-      addLink(name,('http'+url),logos+'tv24vn.png')										
-  elif 'Access Asia Network' in name:
+  response.close()									
+  if 'Access Asia Network' in name:
     match=re.compile("\"BroadcastStation\":\"accessasia\",\"Channel\":\"(.*?)\",\"Path\":\"([^\"]*)\",\"Thumbnail\":\"(.+?)\"").findall(link)
     for name,url,thumbnail in match:
       addLink('[COLOR yellow]'+name+'[/COLOR]',url,thumbnail)								
@@ -240,22 +235,28 @@ def addLink(name,url,iconimage):
   liz.setInfo( type="Video", infoLabels={ "Title": name } )
   ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=liz)
   return ok
-		
-def fptlinks(url,name):
+			  
+def resolve_url(url):
   req = urllib2.Request(url)
-  req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.4) Gecko/2008092417 Firefox/4.0.4')
+  req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
   response = urllib2.urlopen(req, timeout=90)
   link=response.read()
   response.close()
-  if 'livetv' in url:
-	match=re.compile('var video_str = "<video id=\'main-video\' src=\'" \+ "(.+?)"').findall(link)
-	for url in match:
-	  addLink(name,url.replace('1000.stream','2500.stream'),logos+'fptplay.png')						
-  else:
-	match=re.compile('"<source src=\'([^\']*)\'').findall(link)
-	for url in match:
-	  addLink(name,url,logos+'fptplay.png')
-    
+  if 'htvonline' in url:		
+    mediaUrl=re.compile("file: \"([^\"]*)\"").findall(link)[0]							
+  elif 'tv24' in url:
+    mediaUrl='http'+re.compile('\'file\': \'http([^\']*)').findall(link)[0]									
+  elif 'fptplay' in url:
+    if 'livetv' in url: 
+	  mediaUrl=re.compile('var video_str = "<video id=\'main-video\' src=\'" \+ "(.+?)"').findall(link)[0].replace('1000.stream','2500.stream')
+	  #match=re.compile('var video_str = "<video id=\'main-video\' src=\'" \+ "(.+?)"').findall(link)
+	  #mediaUrl=match[0].replace('1000.stream','2500.stream')						
+    else:
+	  mediaUrl=re.compile('"<source src=\'([^\']*)\'').findall(link)[0]
+  item = xbmcgui.ListItem(path=mediaUrl)
+  xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)	  
+  return
+ 	  
 def plist(url):	
   req = urllib2.Request(url)
   req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.4) Gecko/2008092417 Firefox/4.0.4')
@@ -278,7 +279,14 @@ def eps(url):
   title=re.compile('<title>([^\']+)</title>').findall(link)		
   match=re.compile("<a href=\"\/Video([^\"]*)\">(.*?)<\/a><\/li>").findall(link)
   for url,name in match:
-    addDir(('%s   -   %s' % ('[COLOR lime]Tập '+name+'[/COLOR]','[COLOR yellow]'+title[-1]+'[/COLOR]')),('%s/Video%s' % (fptplay, url)),8,logos+'fptplay.png')
+    add_Link(('%s   -   %s' % ('[COLOR lime]Tập '+name+'[/COLOR]','[COLOR yellow]'+title[-1]+'[/COLOR]')),('%sVideo%s' % (fptplay, url)),logos+'fptplay.png')
+
+def add_Link(name,url,iconimage):
+  u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode=11"  
+  liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
+  liz.setInfo( type="Video", infoLabels={ "Title": name } )
+  liz.setProperty('IsPlayable', 'true')  
+  ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz)  
 
 def addDir(name,url,mode,iconimage):
   u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
@@ -348,6 +356,10 @@ elif mode==8:
 
 elif mode==9:
   print ""
-  HD()	
+  HD()
+  
+elif mode==11:
+  print ""+url
+  resolve_url(url)
   
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
