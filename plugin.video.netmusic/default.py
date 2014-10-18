@@ -30,21 +30,21 @@ logos=xbmc.translatePath(os.path.join(home, 'logos\\'))
 nhacso='http://nhacso.net/'
 csn='http://chiasenhac.com/'
 
-def make_request(url):
+def makeRequest(url):
   try:
     req=urllib2.Request(url)
-    req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+    req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:19.0) Gecko/20100101 Firefox/19.0')
     response=urllib2.urlopen(req, timeout=90)
     link=response.read()
     response.close()  
     return link
-  except:
+  except urllib2.URLError, e:
     print 'We failed to open "%s".' % url
+    if hasattr(e, 'code'):
+      print 'We failed with error code - %s.' % e.code	
     if hasattr(e, 'reason'):
       print 'We failed to reach a server.'
       print 'Reason: ', e.reason
-    if hasattr(e, 'code'):
-      print 'We failed with error code - %s.' % e.code  
 
 def main():
   addDir('[COLOR yellow]Video Nhạc Số[/COLOR]',nhacso,2,logos+'ns.png')		
@@ -83,7 +83,7 @@ def search():
 def categories(url):
   if 'nhacso' in url:
     addDir('[COLOR lime]Nhạc Số[/COLOR][B]   [COLOR lime]>[/COLOR][COLOR magenta]>[/COLOR][COLOR cyan]>[/COLOR][COLOR orange]>[/COLOR]   [/B][COLOR lime]Tìm Nhạc[/COLOR]',nhacso,1,logos+'ns.png')		
-    content=make_request(url)	
+    content=makeRequest(url)	
     match=re.compile("<a href=\"http:\/\/nhacso.net\/the-loai-video(.+?)\" title=\"([^\"]*)\"").findall(content)[0:21]
     for url,name in match:
       if 'Nhạc Cách Mạng' in name: 
@@ -98,13 +98,13 @@ def categories(url):
         addDir('[COLOR cyan]'+name+'[/COLOR]',nhacso+'video-cua-nghe-si'+url.replace('.html','-1-1.html'),3,logos+'ns.png')	  	  
   if 'chiasenhac' in url:
     addDir('[COLOR yellow]Chia Sẻ Nhạc[/COLOR][B]   [COLOR lime]>[/COLOR][COLOR magenta]>[/COLOR][COLOR cyan]>[/COLOR][COLOR orange]>[/COLOR]   [/B][COLOR yellow]Tìm Nhạc[/COLOR]',csn,1,logos+'csn.png')		
-    content=make_request(url)
+    content=makeRequest(url)
     match=re.compile("<a href=\"hd(.+?)\" title=\"([^\"]*)\"").findall(content)[1:8]
     for url,name in match:
 	  addDir('[COLOR lime]'+name+'[/COLOR]',csn+'hd'+url,3,logos+'csn.png')
 							
 def index(url):
-  content=make_request(url)
+  content=makeRequest(url)
   if 'chiasenhac' in url:		
     match=re.compile("<a href=\"([^\"]*)\" title=\"(.*?)\"><img src=\"([^\"]+)\"").findall(content)
     for url,name,thumbnail in match:
@@ -134,8 +134,8 @@ def index(url):
       for url,name in match:
         addDir('[COLOR lime]Trang '+name+'[/COLOR]',url,3,logos+'ns.png')
 		
-def resolve_url(url):
-  content=make_request(url)
+def resolveUrl(url):
+  content=makeRequest(url)
   if 'chiasenhac' in url:		
     try:
       mediaUrl=re.compile("\"hd-2\".+?\"([^\"]+)\"").findall(content)[0].replace('%3A',':').replace('%2F','/').replace('%2520','%20')
@@ -225,6 +225,6 @@ elif mode==3:
 		
 elif mode==4:
   print ""+url
-  resolve_url(url)		
+  resolveUrl(url)		
 		
 xbmcplugin.endOfDirectory(int(sys.argv[1]))

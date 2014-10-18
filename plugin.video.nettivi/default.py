@@ -34,22 +34,22 @@ htvonline='http://www.htvonline.com.vn/livetv'
 fptplay='http://fptplay.net/'
 tv24vn='http://www.tv24.vn'
 
-def make_request(url):
+def makeRequest(url):
   try:
     req=urllib2.Request(url)
-    req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+    req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:19.0) Gecko/20100101 Firefox/19.0')
     response=urllib2.urlopen(req, timeout=90)
     link=response.read()
     response.close()  
     return link
-  except:
+  except urllib2.URLError, e:
     print 'We failed to open "%s".' % url
+    if hasattr(e, 'code'):
+      print 'We failed with error code - %s.' % e.code	
     if hasattr(e, 'reason'):
       print 'We failed to reach a server.'
       print 'Reason: ', e.reason
-    if hasattr(e, 'code'):
-      print 'We failed with error code - %s.' % e.code  
-	  
+ 	  
 def main():
   addDir('[COLOR lime]HD[/COLOR] [COLOR cyan]Channels[/COLOR]','hdchannels',8,logos+'hd.png')
   addDir('[COLOR yellow]TV Hải Ngoại[/COLOR]   ++   [COLOR cyan]Âm Nhạc[/COLOR]   ++   [COLOR lime]Radio[/COLOR]',tvchannels,7,logos+'tivihn.png')
@@ -71,7 +71,7 @@ def main():
   
 def fpt(url):
   addDir('[COLOR cyan]Tìm FPTPlay\'s Video[/COLOR][B]   [COLOR cyan]>[/COLOR][COLOR yellow]>[/COLOR][COLOR lime]>[/COLOR][COLOR orange]>[/COLOR]   [/B][COLOR orange]Video Search[/COLOR]',fptplay,11,logos+'fptplay.png')		 
-  content=make_request(url)	
+  content=makeRequest(url)	
   match=re.compile("<li ><a href=\"(.+?)\" class=\".+?\">(.+?)<\/a><\/li>").findall(content)
   for url,name in match:
     if 'livetv' in url:
@@ -79,30 +79,30 @@ def fpt(url):
     else:
       addDir('[COLOR lime]'+name+'[/COLOR]',fptplay+url,4,logos+'fptplay.png')			
 
-def fpt_pagelist(url):	
-  content=make_request(url)
+def fptPagelist(url):	
+  content=makeRequest(url)
   match=re.compile("<div class=\"col\">\s*<a href=\"([^\"]+)\">\s*<img src=\"([^\"]*)\" alt=\"(.+?)\"").findall(content)
   for url,thumbnail,name in match:	
-    addDir('[COLOR lime]'+name+'[/COLOR]',fptplay+url,5,thumbnail)
+    addDir('[COLOR lime]'+name.replace('&amp;','[COLOR cyan]và[/COLOR]')+'[/COLOR]',fptplay+url,5,thumbnail)
   match=re.compile("<li><a href=\"(.+?)\">(\d+)<\/a><\/li>").findall(content)
   for url,name in match:	
     addDir('[COLOR yellow]Trang '+name+'[/COLOR]',fptplay+url,3,logos+'fptplay.png')
 	  	  
-def fpt_dirs(url):
-  content=make_request(url)
+def fptDirs(url):
+  content=makeRequest(url)
   match=re.compile("<h3><a href=\"(.+?)\">(.+?)<\/a><\/h3>").findall(content)
   for url,name in match:	
     addDir('[COLOR yellow]'+name+'[/COLOR]',fptplay+url,3,logos+'fptplay.png')
 	
-def fpt_episode(url):
-  content=make_request(url)
+def fptEpisodes(url):
+  content=makeRequest(url)
   title=re.compile('<title>([^\']+)</title>').findall(content)		
   match=re.compile("<a href=\"\/Video([^\"]*)\">(.*?)<\/a><\/li>").findall(content)
   for url,name in match:
-    add_Link(('%s   -   %s' % ('[COLOR lime]Tập '+name+'[/COLOR]','[COLOR yellow]'+title[-1]+'[/COLOR]')),('%sVideo%s' % (fptplay, url)),logos+'fptplay.png')
+    add_Link(('%s   -   %s' % ('[COLOR lime]Tập '+name+'[/COLOR]','[COLOR yellow]'+title[-1].replace('&amp;','[COLOR cyan]và[/COLOR]')+'[/COLOR]')),('%sVideo%s' % (fptplay, url)),logos+'fptplay.png')
   	  
 def index(url):
-  content=make_request(url)
+  content=makeRequest(url)
   if 'tv24' in url:
 	match=re.compile("<SPAN id=\".+?\"><a href='(.+?)'><img src='(.+?)' onmouseover=\"this.src='http:\/\/tv24.vn\/WebMedia\/Channels\/\d+\/(.+?).png'").findall(content)
 	for url,thumbnail,name in match:
@@ -119,8 +119,8 @@ def index(url):
 	for name,url,thumbnail in match:
 	  add_Link('[COLOR lime]'+name+'[/COLOR]',fptplay+url,thumbnail)						
 	  
-def videolinks(url,name):
-  content=make_request(url)								
+def videoLinks(url,name):
+  content=makeRequest(url)								
   if 'Access Asia Network' in name:
     match=re.compile("\"BroadcastStation\":\"accessasia\",\"Channel\":\"(.*?)\",\"Path\":\"([^\"]*)\",\"Thumbnail\":\"(.+?)\"").findall(content)
     for name,url,thumbnail in match:
@@ -209,13 +209,13 @@ def HD():
   add_Link('[COLOR lime]National Geographic HD[/COLOR]','http://www.htvonline.com.vn/livetv/national-geographic-3132366E61.html',logos+'natgeohd.png')
   add_Link('[COLOR lime]Discovery World HD[/COLOR]','http://www.htvonline.com.vn/livetv/discovery-hd-3132336E61.html',logos+'dischd.png')
   add_Link('[COLOR lime]FOX SPORTS PLUS HD[/COLOR]','http://www.htvonline.com.vn/livetv/espn-hd-3132346E61.html',logos+'foxsporthd.png')	  
-  content=make_request(htvonline)  
+  content=makeRequest(htvonline)  
   match=re.compile("<a class=\"mh-grids5-img\" href=\"([^\"]*)\" title=\"(.+?)\">\s.*?\s*<img src=\"(.*?)\"").findall(content)
   for url,name,thumbnail in match:	
     if 'HTV7' in name or 'HTV9' in name or ' HD' in name or 'htv2-31336E61' in url:
 	  add_Link('[COLOR cyan]'+name+'[/COLOR]',url,thumbnail)
   add_Link('[COLOR cyan]FBNC HD[/COLOR]','http://www.htvonline.com.vn/livetv/fbnc-34306E61.html',logos+'fnbchd.png')  	  	  
-  content=make_request(vtcplay)  
+  content=makeRequest(vtcplay)  
   match=re.compile("\"Name\":\"(.*?)\".+?\"Thumbnail2\":\"(.+?)\".+?\"Path\":\"([^\"]*)\"").findall(content)
   for  name,thumbnail,url in match:
     if ' HD' in name:
@@ -228,11 +228,11 @@ def search():
     if (keyb.isConfirmed()):
       searchText = urllib.quote_plus(keyb.getText())
     url = fptplay+'Search/'+searchText
-    fpt_pagelist(url)
+    fptPagelist(url)
   except: pass
 	  
-def resolve_url(url):
-  content=make_request(url)
+def resolveUrl(url):
+  content=makeRequest(url)
   if 'htvonline' in url:		
     mediaUrl=re.compile("file: \"([^\"]*)\"").findall(content)[0]							
   elif 'tv24' in url:
@@ -323,15 +323,15 @@ elif mode==2:
 		
 elif mode==3:
   print ""+url
-  fpt_pagelist(url)
+  fptPagelist(url)
 		
 elif mode==4:
   print ""+url
-  fpt_dirs(url)
+  fptDirs(url)
 		
 elif mode==5:
   print ""+url
-  fpt_episode(url)
+  fptEpisodes(url)
 		
 elif mode==6:
   print ""+url
@@ -339,7 +339,7 @@ elif mode==6:
 		
 elif mode==7:
   print ""+url
-  videolinks(url,name)
+  videoLinks(url,name)
 
 elif mode==8:
   print ""
@@ -347,7 +347,7 @@ elif mode==8:
   
 elif mode==9:
   print ""+url
-  resolve_url(url)
+  resolveUrl(url)
 
 elif mode==11:
   search()

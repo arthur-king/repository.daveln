@@ -31,21 +31,21 @@ phim3s='http://phim3s.net/'
 dchd='http://dangcaphd.com/'
 pgt='http://phimgiaitri.vn/'
 
-def make_request(url):
+def makeRequest(url):
   try:
     req=urllib2.Request(url)
-    req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+    req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:19.0) Gecko/20100101 Firefox/19.0')
     response=urllib2.urlopen(req, timeout=120)
     link=response.read()
     response.close()  
     return link
-  except:
+  except urllib2.URLError, e:
     print 'We failed to open "%s".' % url
+    if hasattr(e, 'code'):
+      print 'We failed with error code - %s.' % e.code	
     if hasattr(e, 'reason'):
       print 'We failed to reach a server.'
       print 'Reason: ', e.reason
-    if hasattr(e, 'code'):
-      print 'We failed with error code - %s.' % e.code  
  
 def main():
   addDir('[COLOR yellow]phim3s.net[/COLOR]',phim3s,2,logos+'phim3s_1.png')
@@ -82,7 +82,7 @@ def search():
     except: pass
 
 def categories(url):
-  content=make_request(url)
+  content=makeRequest(url)
   if 'phim3s' in url:
     addDir('[COLOR yellow]phim3s[/COLOR][B]   [COLOR lime]>[/COLOR][COLOR orange]>[/COLOR][COLOR blue]>[/COLOR][COLOR magenta]>[/COLOR]   [/B][COLOR yellow]Tìm Phim[/COLOR]',phim3s,1,logos+'phim3s_1.png')
     match=re.compile("<a href=\"the-loai([^\"]*)\" title=\"([^\"]+)\">.+?<\/a>").findall(content) 
@@ -115,7 +115,7 @@ def categories(url):
       addDir('[COLOR yellow]'+name+'[/COLOR]',pgt+'result.php?type=Phim%20L%E1%BA%BB'+url.replace(' ','%20'),3,logos+'pgt.png')	
    
 def index(url):
-  content=make_request(url)
+  content=makeRequest(url)
   if 'phim3s' in url:
     match=re.compile("<div class=\"inner\"><a href=\"(.*?)\" title=\"([^\"]*)\"><img src=\"(.+?)\"").findall(content)
     for url,name,thumbnail in match:
@@ -150,30 +150,30 @@ def index(url):
     for url,name in match:
       addDir('[COLOR lime]Trang '+name+'[/COLOR]',pgt+url.replace(' ','%20'),3,logos + 'pgt.png')					
  
-def videolinks(url,name):
-  content=make_request(url)
+def videoLinks(url,name):
+  content=makeRequest(url)
   thumbnail=re.compile("<meta property=\"og:image\" content=\"([^\"]*)\"").findall(content)[0]		
   match=re.compile("a data-type=\"watch\" data-episode-id.+?href=\"([^\"]*)\" title=\"(.*?)\"").findall(content)
   for url,title in match:
     addLink(('%s   -   %s' % ('[COLOR lime]'+title+'[/COLOR]',name )),('%s%svideo.mp4' % (phim3s, url)),thumbnail)
 	
-def pgtri_bo():
+def pgtriBo():
   #addDir('[COLOR cyan]Phimgiaitri[/COLOR]',pgt,5,logos+'pgt.png')
-  content=make_request(url)
+  content=makeRequest(url)
   match=re.compile('<li class="has-sub"><a href=\'#\'><span>(.+?)<\/span><\/a>').findall(content)[0]  
   addDir('[COLOR yellow]'+match+'[/COLOR]',pgt,2,logos+'pgt.png')			
   match=re.compile('<li class="has-sub"><a href=\'#\'><span>(.+?)<\/span><\/a>').findall(content)[1]		
   addDir('[COLOR lime]'+match+'[/COLOR]',pgt,6,logos+'pgt.png')	
  
-def pgtri_bo_categories(url):
+def pgtriBoCategories(url):
   addDir('[COLOR yellow]phimgiatri[/COLOR][B]   [COLOR lime]>[/COLOR][COLOR orange]>[/COLOR][COLOR blue]>[/COLOR][COLOR magenta]>[/COLOR]   [/B][COLOR yellow]Tìm Phim Bộ[/COLOR]',pgt,9,logos+'pgt.png')
-  content=make_request(url) 
+  content=makeRequest(url) 
   match=re.compile('<a href=\'result.php\?type=Phim Bộ(.+?)\'><span>(.+?)<\/span>').findall(content) 
   for url,name in match:
     addDir('[COLOR lime]'+name+'[/COLOR]',pgt+'result.php?type=Phim%20B%E1%BB%99'+url.replace(' ','%20'),7,logos+'pgt.png')
 	
-def pgtri_bo_pagelist(url):
-  content=make_request(url)
+def pgtriBoPagelist(url):
+  content=makeRequest(url)
   match=re.compile('href=\'([^\']*).html\'>\s*<img style=.+?src=(.+?) ><div class=\'text\'>\s*<p>.+?<\/p>\s*<\/div>.+?>([^<]*)\s*<\/').findall(content)
   for url,thumbnail,name in match:
     addDir('[COLOR lime]'+name+'[/COLOR]',pgt+url+'/Tap-1.html',8,pgt+thumbnail)				
@@ -181,13 +181,13 @@ def pgtri_bo_pagelist(url):
   for url,name in match:
     addDir('[COLOR yellow]Trang '+name+'[/COLOR]',pgt+url.replace(' ','%20'),7,logos+'pgt.png')
 	
-def pgtri_bo_episodes(url,name):
-  content=make_request(url)
+def pgtriBoEpisodes(url,name):
+  content=makeRequest(url)
   thumbnail=re.compile("<meta property=\"og:image\" content=\"(.+?)\"").findall(content)
-  get_link('[COLOR yellow]Tập 1  -  [/COLOR]'+name,url,thumbnail[0])
+  get_Link('[COLOR yellow]Tập 1  -  [/COLOR]'+name,url,thumbnail[0])
   match=re.compile("<a href=\"(.+?)\" page=(\d+)>").findall(content)
   for url,title in match:
-    get_link('[COLOR yellow]Tập '+title+'  -  '+name+'[/COLOR]',url,thumbnail[0])
+    get_Link('[COLOR yellow]Tập '+title+'  -  '+name+'[/COLOR]',url,thumbnail[0])
 	  		  
 def inquiry():
   try:
@@ -199,8 +199,8 @@ def inquiry():
     plist(url)
   except: pass
 	  
-def resolve_url(url):
-  content=make_request(url)
+def resolveUrl(url):
+  content=makeRequest(url)
   if 'dangcaphd' in url:
     try:	
 	  mediaUrl=re.compile('<a _episode="1" _link="(.+?)_\d_\d+.mp4"').findall(content)[0]+'.mp4'
@@ -212,8 +212,8 @@ def resolve_url(url):
   xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)	  
   return
 
-def url_resolver(url):
-  content=make_request(url)
+def urlResolver(url):
+  content=makeRequest(url)
   mediaUrl='http://phimgiaitri.vn:83/phimtv/phimbo'+re.compile('file: "rtmpe:.+?phimbo(.+?)"').findall(content)[0]
   item=xbmcgui.ListItem(path=mediaUrl)
   xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)  
@@ -244,7 +244,7 @@ def addDir(name,url,mode,iconimage):
   ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
   return ok
    
-def get_link(name,url,iconimage):
+def get_Link(name,url,iconimage):
   u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode=11"  
   liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
   liz.setInfo( type="Video", infoLabels={ "Title": name } )
@@ -304,33 +304,33 @@ elif mode==3:
         
 elif mode==4:
   print ""+url
-  videolinks(url,name)
+  videoLinks(url,name)
 
 elif mode==5:
   print ""
-  pgtri_bo()
+  pgtriBo()
   
 elif mode==6:
   print ""+url
-  pgtri_bo_categories(url)
+  pgtriBoCategories(url)
   
 elif mode==7:
   print ""+url
-  pgtri_bo_pagelist(url)
+  pgtriBoPagelist(url)
   
 elif mode==8:
   print ""+url
-  pgtri_bo_episodes(url,name)
+  pgtriBoEpisodes(url,name)
   
 elif mode==9:
   inquiry()
  
 elif mode==10:
   print ""+url
-  resolve_url(url)
+  resolveUrl(url)
 
 elif mode==11:
   print ""+url
-  url_resolver(url)  
+  urlResolver(url)  
   
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
