@@ -33,6 +33,7 @@ vtcplay='http://117.103.206.21:88/Channel/GetChannels'
 htvonline='http://www.htvonline.com.vn/livetv'
 fptplay='http://fptplay.net/'
 tv24vn='http://www.tv24.vn'
+zuitv='http://zui.vn/livetv.html'
 
 def makeRequest(url):
   try:
@@ -60,6 +61,7 @@ def main():
   addDir('[COLOR cyan]VTC[/COLOR]',tvchannels,7,logos+'vtccomvn.png')		
   addDir('[COLOR magenta]HTVOnline[/COLOR]',htvonline,6,logos+'htvonline.png')
   addDir('[COLOR lime]TV24VN[/COLOR]    [COLOR lime]>[/COLOR][COLOR magenta]>[/COLOR][COLOR orange]>[/COLOR][COLOR yellow]>[/COLOR]    [COLOR yellow]SCTV[/COLOR]',tv24vn,6,logos+'tv24vn.png')				
+  addDir('[COLOR white]Zui Live TV[/COLOR]',zuitv,6,logos+'zui.png')
   addLink('[COLOR lightgreen]Little Sai Gon TV[/COLOR]','http://stream.s15.cpanelservices.com/lstvlive/livestream/playlist.m3u8',logos+'littlesaigon.png')	
   addLink('[COLOR silver]Animal Planet[/COLOR]','http://202.75.23.34:80/live/ch31//01.m3u8',logos+'ap.png')	
   addLink('[COLOR violet]Discovery Channel[/COLOR]','http://202.75.23.34:80/live/ch29/01.m3u8',logos+'discovery.png')	
@@ -79,7 +81,7 @@ def fpt(url):
     else:
       addDir('[COLOR lime]'+name+'[/COLOR]',fptplay+url,4,logos+'fptplay.png')			
 
-def fptPagelist(url):	
+def mediaList(url):	
   content=makeRequest(url)
   match=re.compile("<div class=\"col\">\s*<a href=\"([^\"]+)\">\s*<img src=\"([^\"]*)\" alt=\"(.+?)\"").findall(content)
   for url,thumbnail,name in match:	
@@ -88,13 +90,13 @@ def fptPagelist(url):
   for url,name in match:	
     addDir('[COLOR yellow]Trang '+name+'[/COLOR]',fptplay+url,3,logos+'fptplay.png')
 	  	  
-def fptDirs(url):
+def dirs(url):
   content=makeRequest(url)
   match=re.compile("<h3><a href=\"(.+?)\">(.+?)<\/a><\/h3>").findall(content)
   for url,name in match:	
     addDir('[COLOR yellow]'+name+'[/COLOR]',fptplay+url,3,logos+'fptplay.png')
 	
-def fptEpisodes(url):
+def episodes(url):
   content=makeRequest(url)
   title=re.compile('<title>([^\']+)</title>').findall(content)		
   match=re.compile("<a href=\"\/Video([^\"]*)\">(.*?)<\/a><\/li>").findall(content)
@@ -118,7 +120,14 @@ def index(url):
 	match=re.compile("channel=\"(.*?)\" href=\"(.+?)\" data=\".+?\">\s+<img src=\"(.*?)\"").findall(content)
 	for name,url,thumbnail in match:
 	  add_Link('[COLOR lime]'+name+'[/COLOR]',fptplay+url,thumbnail)						
-	  
+  if 'zui' in url:
+    match=re.compile("alt='(.+?)' href='(.+?)'><img src='(.+?)'").findall(content)[3:36]
+    for name,url,thumbnail in match:
+      if 'SCTV1' in name or 'VTC14' in name or 'ITV' in name or 'Nhạc của tui' in name or 'Thuần Việt' in name:
+	    add_Link('[COLOR yellow]'+name+'[/COLOR]',url,thumbnail)	  
+      else:
+        pass
+		
 def videoLinks(url,name):
   content=makeRequest(url)								
   if 'Access Asia Network' in name:
@@ -228,7 +237,7 @@ def search():
     if (keyb.isConfirmed()):
       searchText = urllib.quote_plus(keyb.getText())
     url = fptplay+'Search/'+searchText
-    fptPagelist(url)
+    mediaList(url)
   except: pass
 	  
 def resolveUrl(url):
@@ -236,7 +245,9 @@ def resolveUrl(url):
   if 'htvonline' in url:		
     mediaUrl=re.compile("file: \"([^\"]*)\"").findall(content)[0]							
   elif 'tv24' in url:
-    mediaUrl='http'+re.compile('\'file\': \'http([^\']*)').findall(content)[0]									
+    mediaUrl='http'+re.compile('\'file\': \'http([^\']*)').findall(content)[0]	
+  elif 'zui' in url:
+    mediaUrl=re.compile('livetv_play\(\'player\', \'1\', \'(.+?)\'\)').findall(content)[0]	
   elif 'fptplay' in url:
     if 'livetv' in url: 
 	  mediaUrl=re.compile('var video_str="<video id=\'main-video\' src=\'" \+ "(.+?)"').findall(content)[0].replace('1000.stream','2500.stream')
@@ -310,43 +321,33 @@ print "URL: "+str(url)
 print "Name: "+str(name)
 
 if mode==None or url==None or len(url)<1:
-  print ""
   main()
 
 elif mode==1:
-  print ""
   hao()
 		
 elif mode==2:
-  print ""+url
   fpt(url)
 		
 elif mode==3:
-  print ""+url
-  fptPagelist(url)
+  mediaList(url)
 		
 elif mode==4:
-  print ""+url
-  fptDirs(url)
+  dirs(url)
 		
 elif mode==5:
-  print ""+url
-  fptEpisodes(url)
+  episodes(url)
 		
 elif mode==6:
-  print ""+url
   index(url)
 		
 elif mode==7:
-  print ""+url
   videoLinks(url,name)
 
 elif mode==8:
-  print ""
   HD()
   
 elif mode==9:
-  print ""+url
   resolveUrl(url)
 
 elif mode==11:

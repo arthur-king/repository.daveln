@@ -56,8 +56,8 @@ def main():
   addLink('[COLOR violet]VPop TV[/COLOR]','http://206.190.130.141:1935/liveStream/vpoptv_1/playlist.m3u8',logos+'vpop.png')
   addLink('[COLOR cyan]Nhạc Của Tui[/COLOR]','rtmp://123.30.134.108:1935/live playpath=nctlive swfUrl=http://hktivi.net/player.swf pageUrl=http://hktivi.net/kenh/nhaccuatui.php',logos+'nct.png')	
   #addLink('[COLOR blue]Nhạc Của Tui[/COLOR]','rtmp://123.30.134.108/live/ playpath=nctlive swfUrl=http://zui.vn/templates/images/jwplayer.swf pageUrl=http://zui.vn/livetv/nhac-cua-tui-40.html',logos+'nct.png')	
-  #addLink('[COLOR chocolate]iTV[/COLOR]','rtmp://live.kenhitv.vn/liveweb/ playpath=itv_web_500k.stream swfUrl=http://zui.vn/templates/images/jwplayer.swf pageUrl=http://zui.vn/livetv/itv-10.html',logos+'itv.png')
-  addLink('[COLOR silver]iTV[/COLOR]','http://117.103.224.73:1935/live/_definst_/ITV/ITV_live.smil/playlist.m3u8',logos+'itv.png')
+  addLink('[COLOR chocolate]iTV[/COLOR]','rtmp://live.kenhitv.vn/liveweb/ playpath=itv_web_500k.stream swfUrl=http://zui.vn/templates/images/jwplayer.swf pageUrl=http://zui.vn/livetv/itv-10.html',logos+'itv.png')
+  #addLink('[COLOR silver]iTV[/COLOR]','http://117.103.224.73:1935/live/_definst_/ITV/ITV_live.smil/playlist.m3u8',logos+'itv.png')
   addLink('[COLOR orange]M[COLOR red]TV[/COLOR][/COLOR]','rtmp://85.132.78.6:1935/live/ playpath=muztv.stream swfUrl=http://zui.vn/templates/images/jwplayer.swf pageUrl=http://zui.vn/livetv/mtv-81.html',logos+'mtv.png')
 
 def search():
@@ -76,7 +76,7 @@ def search():
       keyb.doModal()
       if (keyb.isConfirmed()):
         searchText=urllib.quote_plus(keyb.getText())
-      url=csn+'search.php?s='+searchText+'&song_list=""'
+      url=csn+'search.php?s='+searchText#+'&song_list=""'
       index(url)
     except: pass
   
@@ -209,22 +209,18 @@ print "URL: "+str(url)
 print "Name: "+str(name)
   
 if mode==None or url==None or len(url)<1:
-  print ""
   main()
 
 elif mode==1:
   search()	
 		
 elif mode==2:
-  print ""+url
   categories(url)		
 		
 elif mode==3:
-  print ""+url
   index(url)
 		
 elif mode==4:
-  print ""+url
   resolveUrl(url)		
 		
 xbmcplugin.endOfDirectory(int(sys.argv[1]))

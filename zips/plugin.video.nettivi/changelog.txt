@@ -1,3 +1,7 @@
+v 1.0.7
+Rename function
+Add zui livetv
+
 v 1.0.6
 Rename function
 Update header

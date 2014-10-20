@@ -30,6 +30,8 @@ logos=xbmc.translatePath(os.path.join(home, 'logos\\'))
 phim3s='http://phim3s.net/'
 dchd='http://dangcaphd.com/'
 pgt='http://phimgiaitri.vn/'
+fptplay='http://fptplay.net/'
+zui='http://zui.vn/'
 
 def makeRequest(url):
   try:
@@ -51,7 +53,9 @@ def main():
   addDir('[COLOR yellow]phim3s.net[/COLOR]',phim3s,2,logos+'phim3s_1.png')
   addDir('[COLOR lime]dangcaphd.com[/COLOR]',dchd,2,logos+'dchd_1.png')
   addDir('[COLOR cyan]phimgiaitri.vn[/COLOR]',pgt,5,logos+'pgt.png')   
-	  
+  addDir('[COLOR magenta]fptplay.net[/COLOR]',fptplay,2,logos+'fptplay.png')
+  addDir('[COLOR lightgreen]zui.vn[/COLOR]',zui,2,logos+'zui.png')  
+	
 def search():
   if 'phim3s' in name:
     try:
@@ -80,7 +84,25 @@ def search():
       url=pgt+'result.php?type=search&keywords='+searchText
       index(url)
     except: pass
-
+  if 'fptplay' in name:
+    try:
+      keyb=xbmc.Keyboard('', '[COLOR lime]Enter search text[/COLOR]')
+      keyb.doModal()
+      if (keyb.isConfirmed()):
+        searchText=urllib.quote_plus(keyb.getText())
+      url=fptplay+'Search/'+searchText
+      mediaList(url)
+    except: pass
+  if 'zui' in name:
+    try:
+      keyb = xbmc.Keyboard('', '[COLOR yellow]Enter search text[/COLOR]')
+      keyb.doModal()
+      if (keyb.isConfirmed()):
+	    searchText = urllib.quote_plus(keyb.getText())
+      url = 'http://zui.vn/tim-kiem-nc/'+searchText+'.html'
+      mediaList(url)
+    except: pass
+  
 def categories(url):
   content=makeRequest(url)
   if 'phim3s' in url:
@@ -113,7 +135,29 @@ def categories(url):
     match=re.compile('<a href=\'result.php\?type=Phim Lẻ(.+?)\'><span>(.+?)<\/span>').findall(content)
     for url,name in match:
       addDir('[COLOR yellow]'+name+'[/COLOR]',pgt+'result.php?type=Phim%20L%E1%BA%BB'+url.replace(' ','%20'),3,logos+'pgt.png')	
-   
+  if 'fptplay' in url:
+    addDir('[COLOR lime]fptplay[/COLOR][B]   [COLOR lime]>[/COLOR][COLOR orange]>[/COLOR][COLOR blue]>[/COLOR][COLOR magenta]>[/COLOR]   [/B][COLOR lime]Tìm Video[/COLOR]',fptplay,1,logos+'fptplay.png')
+    match=re.compile("<li ><a href=\"(.+?)\" class=\".+?\">(.+?)<\/a><\/li>").findall(content)
+    for url,name in match:
+      if 'livetv' in url:
+        pass
+      else:
+        addDir('[COLOR magenta]'+name+'[/COLOR]',fptplay+url,6,logos+'fptplay.png')	
+  if 'zui' in url:
+    addDir('[COLOR magenta]zui[/COLOR][B]   [COLOR lime]>[/COLOR][COLOR orange]>[/COLOR][COLOR blue]>[/COLOR][COLOR magenta]>[/COLOR]   [/B][COLOR magenta]Tìm Phim[/COLOR]',zui,1,logos+'zui.png') 
+    match=re.compile("<li><a title=\".+?\" href=\"([^\"]*)\">([^>]+)<\/a><\/li>").findall(content)[0:3]
+    for url,name in match:
+      addDir('[COLOR yellow]'+name+'[/COLOR]',url,7,logos+'zui.png')	  
+    match=re.compile("<li><a href='([^']*)'><b class=\"larrow\"><\/b>(.+?)<\/a><\/li>").findall(content)[0:17]
+    for url,name in match:
+      addDir('[COLOR lime]'+name+'[/COLOR]',url,7,logos+'zui.png')
+    match=re.compile('<li><a href=\'([^\']*)\'><b class="larrow"><\/b>([^>]*)<\/a><\/li>').findall(content)[17:28]
+    for url,name in match:
+      addDir('[COLOR cyan]'+name+'[/COLOR]',url,7,logos+'zui.png')
+    match=re.compile('<li><a href=\'([^\']*)\' style=.+?<\/b>(\d+)<\/a><\/li>').findall(content)
+    for url,name in match:
+      addDir('[COLOR lightgreen]'+name+'[/COLOR]',url,7,logos+'zui.png')	
+	  	    
 def index(url):
   content=makeRequest(url)
   if 'phim3s' in url:
@@ -157,7 +201,7 @@ def videoLinks(url,name):
   for url,title in match:
     addLink(('%s   -   %s' % ('[COLOR lime]'+title+'[/COLOR]',name )),('%s%svideo.mp4' % (phim3s, url)),thumbnail)
 	
-def pgtriBo():
+def pgtri():
   #addDir('[COLOR cyan]Phimgiaitri[/COLOR]',pgt,5,logos+'pgt.png')
   content=makeRequest(url)
   match=re.compile('<li class="has-sub"><a href=\'#\'><span>(.+?)<\/span><\/a>').findall(content)[0]  
@@ -165,30 +209,68 @@ def pgtriBo():
   match=re.compile('<li class="has-sub"><a href=\'#\'><span>(.+?)<\/span><\/a>').findall(content)[1]		
   addDir('[COLOR lime]'+match+'[/COLOR]',pgt,6,logos+'pgt.png')	
  
-def pgtriBoCategories(url):
-  addDir('[COLOR yellow]phimgiatri[/COLOR][B]   [COLOR lime]>[/COLOR][COLOR orange]>[/COLOR][COLOR blue]>[/COLOR][COLOR magenta]>[/COLOR]   [/B][COLOR yellow]Tìm Phim Bộ[/COLOR]',pgt,9,logos+'pgt.png')
+def dirs(url):
   content=makeRequest(url) 
-  match=re.compile('<a href=\'result.php\?type=Phim Bộ(.+?)\'><span>(.+?)<\/span>').findall(content) 
-  for url,name in match:
-    addDir('[COLOR lime]'+name+'[/COLOR]',pgt+'result.php?type=Phim%20B%E1%BB%99'+url.replace(' ','%20'),7,logos+'pgt.png')
-	
-def pgtriBoPagelist(url):
+  if 'phimgiaitri' in url:
+    addDir('[COLOR yellow]phimgiatri[/COLOR][B]   [COLOR lime]>[/COLOR][COLOR orange]>[/COLOR][COLOR blue]>[/COLOR][COLOR magenta]>[/COLOR]   [/B][COLOR yellow]Tìm Phim Bộ[/COLOR]',pgt,9,logos+'pgt.png')
+    match=re.compile('<a href=\'result.php\?type=Phim Bộ(.+?)\'><span>(.+?)<\/span>').findall(content) 
+    for url,name in match:
+      addDir('[COLOR lime]'+name+'[/COLOR]',pgt+'result.php?type=Phim%20B%E1%BB%99'+url.replace(' ','%20'),7,logos+'pgt.png')
+  if 'fptplay' in url:
+    match=re.compile("<h3><a href=\"(.+?)\">(.+?)<\/a><\/h3>").findall(content)
+    for url,name in match:	
+      addDir('[COLOR yellow]'+name+'[/COLOR]',fptplay+url,7,logos+'fptplay.png')
+	  
+def mediaList(url):
   content=makeRequest(url)
-  match=re.compile('href=\'([^\']*).html\'>\s*<img style=.+?src=(.+?) ><div class=\'text\'>\s*<p>.+?<\/p>\s*<\/div>.+?>([^<]*)\s*<\/').findall(content)
-  for url,thumbnail,name in match:
-    addDir('[COLOR lime]'+name+'[/COLOR]',pgt+url+'/Tap-1.html',8,pgt+thumbnail)				
-  match=re.compile("<a  href='(.+?)'>(\d+)  <\/a>").findall(content)
-  for url,name in match:
-    addDir('[COLOR yellow]Trang '+name+'[/COLOR]',pgt+url.replace(' ','%20'),7,logos+'pgt.png')
-	
-def pgtriBoEpisodes(url,name):
+  if 'phimgiaitri' in url:  
+    match=re.compile('href=\'([^\']*).html\'>\s*<img style=.+?src=(.+?) ><div class=\'text\'>\s*<p>.+?<\/p>\s*<\/div>.+?>([^<]*)\s*<\/').findall(content)
+    for url,thumbnail,name in match:
+      addDir('[COLOR lime]'+name+'[/COLOR]',pgt+url+'/Tap-1.html',8,pgt+thumbnail)				
+    match=re.compile("<a  href='(.+?)'>(\d+)  <\/a>").findall(content)
+    for url,name in match:
+      addDir('[COLOR yellow]Trang '+name+'[/COLOR]',pgt+url.replace(' ','%20'),7,logos+'pgt.png')
+  if 'fptplay' in url:
+    match=re.compile("<div class=\"col\">\s*<a href=\"([^\"]+)\">\s*<img src=\"([^\"]*)\" alt=\"(.+?)\"").findall(content)
+    for url,thumbnail,name in match:	
+      addDir('[COLOR lime]'+name.replace('&amp;','[COLOR cyan]và[/COLOR]')+'[/COLOR]',fptplay+url,8,thumbnail)
+    match=re.compile("<li><a href=\"(.+?)\">(\d+)<\/a><\/li>").findall(content)
+    for url,name in match:	
+      addDir('[COLOR yellow]Trang '+name+'[/COLOR]',fptplay+url,7,logos+'fptplay.png')
+  if 'zui' in url:
+    match=re.compile('<a data-tooltip=".+?" href="(.+?)" title="(.+?)".+?>\s*<img src="(.+?)"').findall(content)
+    if 'phim-bo' in url:
+      for url,name,thumbnail in match:
+        addDir('[COLOR yellow]' + name + '[/COLOR]',url,8,thumbnail)
+      match=re.compile("<a href=\"([^\"]*)\" title='.+?'>([^>]*)<\/a><\/li>").findall(content)
+      for url,name in match:
+        addDir('[COLOR lime]Trang '+name.replace('&laquo;','[COLOR cyan]Kế Trước[/COLOR]').replace(' &raquo;','[COLOR magenta]Kế Tiếp[/COLOR]')+'[/COLOR]',url,7,logos+'zui.png')	  
+    else:
+      for url,name,thumbnail in match:
+        add_Link('[COLOR yellow]' + name + '[/COLOR]',url,thumbnail)
+      match=re.compile("<a href=\"([^\"]+)\" title='.+?'>([^>]*)<\/a><\/li>").findall(content)
+      for url,name in match:
+        addDir('[COLOR lime]Trang '+name.replace('&laquo;','[COLOR cyan]Kế Trước[/COLOR]').replace(' &raquo;','[COLOR magenta]Kế Tiếp[/COLOR]')+'[/COLOR]',url,7,logos+'zui.png')
+	  
+def episodes(url,name):
   content=makeRequest(url)
-  thumbnail=re.compile("<meta property=\"og:image\" content=\"(.+?)\"").findall(content)
-  get_Link('[COLOR yellow]Tập 1  -  [/COLOR]'+name,url,thumbnail[0])
-  match=re.compile("<a href=\"(.+?)\" page=(\d+)>").findall(content)
-  for url,title in match:
-    get_Link('[COLOR yellow]Tập '+title+'  -  '+name+'[/COLOR]',url,thumbnail[0])
-	  		  
+  if 'phimgiaitri' in url:    
+    thumbnail=re.compile("<meta property=\"og:image\" content=\"(.+?)\"").findall(content)
+    get_Link('[COLOR yellow]Tập 1  -  [/COLOR]'+name,url,thumbnail[0])
+    match=re.compile("<a href=\"(.+?)\" page=(\d+)>").findall(content)
+    for url,title in match:
+      get_Link('[COLOR yellow]Tập '+title+'  -  '+name+'[/COLOR]',url,thumbnail[0])
+  if 'fptplay' in url:
+    title=re.compile('<title>([^\']+)</title>').findall(content)		
+    match=re.compile("<a href=\"\/Video([^\"]*)\">(.*?)<\/a><\/li>").findall(content)
+    for url,name in match:
+      add_Link(('%s   -   %s' % ('[COLOR lime]Tập '+name+'[/COLOR]','[COLOR yellow]'+title[-1].replace('&amp;','[COLOR cyan]và[/COLOR]')+'[/COLOR]')),('%sVideo%s' % (fptplay, url)),logos+'fptplay.png')
+  if 'zui' in url:
+    thumbnail=re.compile("<meta property=\"og:image\" content=\"(.+?)\"").findall(content)[0]		
+    match=re.compile('<a id=\'.+?\' href=\'(.+?)\'  >(.+?)<\/a><\/li>').findall(content)
+    for url,episode in match:
+      add_Link(('%s   -   %s' % ('[COLOR lime]Tập '+episode+'[/COLOR]',name )),zui+url,'http://vncdn.zui.vn'+thumbnail)					
+	  
 def inquiry():
   try:
     keyb=xbmc.Keyboard('', '[COLOR lime]Enter search text[/COLOR]')
@@ -196,7 +278,7 @@ def inquiry():
     if (keyb.isConfirmed()):
       searchText=urllib.quote_plus(keyb.getText())
     url=pgt+'result.php?type=search&keywords='+searchText
-    plist(url)
+    mediaList(url)
   except: pass
 	  
 def resolveUrl(url):
@@ -208,6 +290,10 @@ def resolveUrl(url):
 	  mediaUrl=re.compile('<a _episode="1" _link="(.+?)"').findall(content)[0]
   if 'phimgiaitri' in url:	
     mediaUrl='http://phimgiaitri.vn/phimtv/phimle'+re.compile('file: "rtmpe:.+?phimle(.+?)"').findall(content)[0]
+  if 'fptplay' in url:
+	mediaUrl=re.compile('"<source src=\'([^\']*)\'').findall(content)[0] 
+  if 'zui' in url:
+    mediaUrl='rtmp'+re.compile("'rtmp(.+?)'").findall(content)[0]#+'/playlist.m3u8'	
   item=xbmcgui.ListItem(path=mediaUrl)
   xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)	  
   return
@@ -288,49 +374,39 @@ print "URL: "+str(url)
 print "Name: "+str(name)
 
 if mode==None or url==None or len(url)<1:
-  print ""
   main()
 
 elif mode==1:
   search()
 		
 elif mode==2:
-  print ""+url
   categories(url)
 				
 elif mode==3:
-  print ""+url
   index(url)
         
 elif mode==4:
-  print ""+url
   videoLinks(url,name)
 
 elif mode==5:
-  print ""
-  pgtriBo()
+  pgtri()
   
 elif mode==6:
-  print ""+url
-  pgtriBoCategories(url)
+  dirs(url)
   
 elif mode==7:
-  print ""+url
-  pgtriBoPagelist(url)
+  mediaList(url)
   
 elif mode==8:
-  print ""+url
-  pgtriBoEpisodes(url,name)
+  episodes(url,name)
   
 elif mode==9:
   inquiry()
  
 elif mode==10:
-  print ""+url
   resolveUrl(url)
 
 elif mode==11:
-  print ""+url
-  urlResolver(url)  
+  urlResolver(url) 
   
 xbmcplugin.endOfDirectory(int(sys.argv[1]))

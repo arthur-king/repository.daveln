@@ -1,3 +1,8 @@
+v 1.0.7
+Rename function
+Add fptplay
+Add zui
+
 v 1.0.6
 Rename function
 Update header
