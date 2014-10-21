@@ -7,7 +7,7 @@
 	</extension>
 	<extension point="xbmc.addon.metadata">
 		<summary>XBMC add-ons</summary>
-		<description>Go though the add-ons and see what you like</description>
+		<description>Go through the add-ons and see what you like</description>
 		<platform>all</platform>
 	</extension>
 </addon>
