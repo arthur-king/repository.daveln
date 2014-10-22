@@ -2,7 +2,7 @@
 <addons>
 <addon id="plugin.video.netmovie"
        name="*netmovie"
-       version="1.0.6"
+       version="1.0.7"
        provider-name="DaveLN">
   <requires>
         <import addon="xbmc.python" version="2.1.0" optional="true" />
@@ -23,7 +23,7 @@
 
 <addon id="plugin.video.netmusic"
        name="*netmusic"
-       version="1.0.6"
+       version="1.0.7"
        provider-name="DaveLN">
   <requires>
         <import addon="xbmc.python" version="2.1.0" optional="true" />
@@ -44,7 +44,7 @@
 
 <addon id="plugin.video.nettivi"
        name="*nettivi"
-       version="1.0.6"
+       version="1.0.7"
        provider-name="DaveLN">
   <requires>
         <import addon="xbmc.python" version="2.1.0" optional="true" />
@@ -71,7 +71,7 @@
 	</extension>
 	<extension point="xbmc.addon.metadata">
 		<summary>XBMC add-ons</summary>
-		<description>Go though the add-ons and see what you like</description>
+		<description>Go through the add-ons and see what you like</description>
 		<platform>all</platform>
 	</extension>
 </addon>
