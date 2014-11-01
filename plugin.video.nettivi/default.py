@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/  
 '''                                                                           
 
-import urllib,urllib2,re,os,sys
+import urllib,urllib2,re,os
 import xbmcplugin,xbmcgui,xbmcaddon
 	
 addon=xbmcaddon.Addon('plugin.video.nettivi')
@@ -27,6 +27,7 @@ home=mysettings.getAddonInfo('path')
 fanart=xbmc.translatePath(os.path.join(home, 'fanart.jpg'))
 icon=xbmc.translatePath(os.path.join(home, 'icon.png'))
 logos=xbmc.translatePath(os.path.join(home, 'logos\\'))
+viet_simpletv='https://raw.githubusercontent.com/giolao/Viet-Simpletv/master/playlist.m3u'
 tvchannels='https://www.dropbox.com/s/kwodh4i7zsovhjl/tvchannels.json?raw=1'
 haotivi='https://www.dropbox.com/s/e2wycvbvnh2sh49/haotivi.json?raw=1'
 vtcplay='http://117.103.206.21:88/Channel/GetChannels'
@@ -39,7 +40,7 @@ def makeRequest(url):
   try:
     req=urllib2.Request(url)
     req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:19.0) Gecko/20100101 Firefox/19.0')
-    response=urllib2.urlopen(req, timeout=90)
+    response=urllib2.urlopen(req, timeout=120)
     link=response.read()
     response.close()  
     return link
@@ -58,6 +59,7 @@ def main():
   addDir('[COLOR lightblue]FPTPlay[/COLOR]',fptplay,2,logos+'fptplay.png')  
   addDir('[COLOR cyan]haotivi[/COLOR]',haotivi,1,logos+'hao.png')		
   addDir('[COLOR orange]VTCPlay[/COLOR]',vtcplay,7,logos+'vtcplay.png')
+  addDir('[COLOR yellow]VietSimple TV[/COLOR]',viet_simpletv,10,logos+'vietsimpletv.png')  
   addDir('[COLOR cyan]VTC[/COLOR]',tvchannels,7,logos+'vtccomvn.png')		
   addDir('[COLOR magenta]HTVOnline[/COLOR]',htvonline,6,logos+'htvonline.png')
   addDir('[COLOR lime]TV24VN[/COLOR]    [COLOR lime]>[/COLOR][COLOR magenta]>[/COLOR][COLOR orange]>[/COLOR][COLOR yellow]>[/COLOR]    [COLOR yellow]SCTV[/COLOR]',tv24vn,6,logos+'tv24vn.png')				
@@ -70,6 +72,25 @@ def main():
   addLink('[COLOR gold]History Channel[/COLOR]','http://202.75.23.36:80/live/ch45/01.m3u8',logos+'history.png')	
   addLink('[COLOR chocolate]NatGeo Wild[/COLOR]','http://202.75.23.35:80/live/ch39/01.m3u8',logos+'natgeowild.png')	
   addLink('[COLOR blue]National Geographic[/COLOR]','http://202.75.23.35:80/live/ch38/01.m3u8',logos+'natgeo.png')
+
+def vietsimpletv(url):
+  content=makeRequest(url)	
+  match=re.compile('#EXTINF.+?,(.+)\s([^"]*)\n').findall(content)
+  for name,url in match:
+    if 'htvonline' in url:
+	  add_Link('[COLOR cyan]'+name+'[/COLOR]',url,logos+'vietsimpletv.png')
+    elif 'tv24.vn' in url:  
+      addLink('[COLOR lime]'+name+'[/COLOR]',url.replace('rtmp://$OPT:rtmp-raw=',''),logos+'vietsimpletv.png')
+    elif 'torrent-tv.ru' in url:  
+      addLink('[COLOR magenta]'+name+'[/COLOR]',url,logos+'vietsimpletv.png')
+    elif 'xemphimso' in url:  
+      addDir('[COLOR blue]'+name+'[/COLOR]',url,7,logos+'vietsimpletv.png')	  
+    elif 'radiovietnam' in url or 'VOA News' in name  or 'NHK Vietnam' in name  or 'RFI Vietnam' in name  or 'VOH' in name:  
+      addLink('[COLOR orange]'+name+'[/COLOR]  -  [COLOR lightgreen]Radio[/COLOR]',url,logos+'vietsimpletv.png')	 
+    elif 'accessasia' in url:  
+      addLink('[COLOR silver]'+name+'[/COLOR]',url,logos+'vietsimpletv.png')		  
+    else:  
+      addLink('[COLOR yellow]'+name+'[/COLOR]',url,logos+'vietsimpletv.png')		  
   
 def fpt(url):
   addDir('[COLOR cyan]Tìm FPTPlay\'s Video[/COLOR][B]   [COLOR cyan]>[/COLOR][COLOR yellow]>[/COLOR][COLOR lime]>[/COLOR][COLOR orange]>[/COLOR]   [/B][COLOR orange]Video Search[/COLOR]',fptplay,11,logos+'fptplay.png')		 
@@ -102,7 +123,7 @@ def episodes(url):
   match=re.compile("<a href=\"\/Video([^\"]*)\">(.*?)<\/a><\/li>").findall(content)
   for url,name in match:
     add_Link(('%s   -   %s' % ('[COLOR lime]Tập '+name+'[/COLOR]','[COLOR yellow]'+title[-1].replace('&amp;','[COLOR cyan]và[/COLOR]')+'[/COLOR]')),('%sVideo%s' % (fptplay, url)),logos+'fptplay.png')
-  	  
+	
 def index(url):
   content=makeRequest(url)
   if 'tv24' in url:
@@ -129,8 +150,12 @@ def index(url):
         pass
 		
 def videoLinks(url,name):
-  content=makeRequest(url)								
-  if 'Access Asia Network' in name:
+  content=makeRequest(url)
+  if 'xemphimso' in url:
+    match=re.compile("file: '(.+?)'").findall(content)
+    for url in match:
+      addLink(name,url,logos+'vietsimpletv.png')	  	  
+  elif 'Access Asia Network' in name:
     match=re.compile("\"BroadcastStation\":\"accessasia\",\"Channel\":\"(.*?)\",\"Path\":\"([^\"]*)\",\"Thumbnail\":\"(.+?)\"").findall(content)
     for name,url,thumbnail in match:
       addLink('[COLOR yellow]'+name+'[/COLOR]',url,thumbnail)								
@@ -232,29 +257,27 @@ def HD():
 	  
 def search():
   try:
-    keyb = xbmc.Keyboard('', '[COLOR yellow]Enter search text[/COLOR]')
+    keyb=xbmc.Keyboard('', '[COLOR yellow]Enter search text[/COLOR]')
     keyb.doModal()
     if (keyb.isConfirmed()):
-      searchText = urllib.quote_plus(keyb.getText())
-    url = fptplay+'Search/'+searchText
+      searchText=urllib.quote_plus(keyb.getText())
+    url=fptplay+'Search/'+searchText
     mediaList(url)
   except: pass
 	  
 def resolveUrl(url):
   content=makeRequest(url)
   if 'htvonline' in url:		
-    mediaUrl=re.compile("file: \"([^\"]*)\"").findall(content)[0]							
+    mediaUrl=re.compile("file: \"([^\"]*)\"").findall(content)[0]	
   elif 'tv24' in url:
     mediaUrl='http'+re.compile('\'file\': \'http([^\']*)').findall(content)[0]	
   elif 'zui' in url:
     mediaUrl=re.compile('livetv_play\(\'player\', \'1\', \'(.+?)\'\)').findall(content)[0]	
   elif 'fptplay' in url:
     if 'livetv' in url: 
-	  mediaUrl=re.compile('var video_str="<video id=\'main-video\' src=\'" \+ "(.+?)"').findall(content)[0].replace('1000.stream','2500.stream')
-	  #match=re.compile('var video_str="<video id=\'main-video\' src=\'" \+ "(.+?)"').findall(content)
-	  #mediaUrl=match[0].replace('1000.stream','2500.stream')						
+	  mediaUrl=re.compile('var video_str="<video id=\'main-video\' src=\'" \+ "(.+?)"').findall(content)[0].replace('1000.stream','2500.stream')						
     else:
-	  mediaUrl=re.compile('"<source src=\'([^\']*)\'').findall(content)[0]
+	  mediaUrl=re.compile('"<source src=\'([^\']*)\'').findall(content)[0] 
   item=xbmcgui.ListItem(path=mediaUrl)
   xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)	  
   return
@@ -349,8 +372,11 @@ elif mode==8:
   
 elif mode==9:
   resolveUrl(url)
+  
+elif mode==10:
+  vietsimpletv(url) 
 
 elif mode==11:
-  search()
+  search()  
   
 xbmcplugin.endOfDirectory(int(sys.argv[1]))

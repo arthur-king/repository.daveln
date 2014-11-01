@@ -1,8 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
+<addon id="plugin.video.netadult"
+       name="*netadult"
+       version="1.0.0"
+       provider-name="DaveLN">
+  <requires>
+        <import addon="xbmc.python" version="2.1.0" optional="true" />
+		<import addon="script.module.simplejson" />
+		<import addon="script.module.t0mm0.common" version="1.1.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource"
+            library="default.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>Adult Movies</summary>
+    <description>Internet Adult Movies</description>
+	<disclaimer lang="en">I am not responsible for the contents of these streams, which are pulled from online provider(s). The streams do not represent my views or opinions in any way.</disclaimer>
+    <platform>all</platform>
+  </extension>
+</addon>
+
 <addon id="plugin.video.netmovie"
        name="*netmovie"
-       version="1.0.7"
+       version="1.0.8"
        provider-name="DaveLN">
   <requires>
         <import addon="xbmc.python" version="2.1.0" optional="true" />
@@ -23,7 +44,7 @@
 
 <addon id="plugin.video.netmusic"
        name="*netmusic"
-       version="1.0.7"
+       version="1.0.8"
        provider-name="DaveLN">
   <requires>
         <import addon="xbmc.python" version="2.1.0" optional="true" />
@@ -44,7 +65,7 @@
 
 <addon id="plugin.video.nettivi"
        name="*nettivi"
-       version="1.0.7"
+       version="1.0.8"
        provider-name="DaveLN">
   <requires>
         <import addon="xbmc.python" version="2.1.0" optional="true" />

@@ -1,3 +1,6 @@
+v 1.0.8
+Add vietsimpletv
+
 v 1.0.7
 Rename function
 Add zui livetv

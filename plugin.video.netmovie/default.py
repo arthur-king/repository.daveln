@@ -27,6 +27,7 @@ home=mysettings.getAddonInfo('path')
 fanart=xbmc.translatePath(os.path.join(home, 'fanart.jpg'))
 icon=xbmc.translatePath(os.path.join(home, 'icon.png'))
 logos=xbmc.translatePath(os.path.join(home, 'logos\\'))
+hd_caphe='http://phim.hdcaphe.com/'
 phim3s='http://phim3s.net/'
 dchd='http://dangcaphd.com/'
 pgt='http://phimgiaitri.vn/'
@@ -52,10 +53,11 @@ def makeRequest(url):
 def main():
   addDir('[COLOR yellow]phim3s.net[/COLOR]',phim3s,2,logos+'phim3s_1.png')
   addDir('[COLOR lime]dangcaphd.com[/COLOR]',dchd,2,logos+'dchd_1.png')
+  addDir('[COLOR lightblue]hdcaphe[/COLOR]',hd_caphe,2,logos+'hdcaphe.png')  
   addDir('[COLOR cyan]phimgiaitri.vn[/COLOR]',pgt,5,logos+'pgt.png')   
   addDir('[COLOR magenta]fptplay.net[/COLOR]',fptplay,2,logos+'fptplay.png')
   addDir('[COLOR lightgreen]zui.vn[/COLOR]',zui,2,logos+'zui.png')  
-	
+
 def search():
   if 'phim3s' in name:
     try:
@@ -95,13 +97,22 @@ def search():
     except: pass
   if 'zui' in name:
     try:
-      keyb = xbmc.Keyboard('', '[COLOR yellow]Enter search text[/COLOR]')
+      keyb=xbmc.Keyboard('', '[COLOR yellow]Enter search text[/COLOR]')
       keyb.doModal()
       if (keyb.isConfirmed()):
-	    searchText = urllib.quote_plus(keyb.getText())
-      url = 'http://zui.vn/tim-kiem-nc/'+searchText+'.html'
+	    searchText=urllib.quote_plus(keyb.getText())
+      url='http://zui.vn/tim-kiem-nc/'+searchText+'.html'
       mediaList(url)
     except: pass
+  if 'hdcaphe' in name:		
+    try:
+      keyb=xbmc.Keyboard('', '[COLOR yellow]Enter search text[/COLOR]')
+      keyb.doModal()
+      if (keyb.isConfirmed()):
+        searchText=urllib.quote_plus(keyb.getText())
+      url=hd_caphe+'search-result.html?keywords='+searchText
+      mediaList(url)
+    except: pass	
   
 def categories(url):
   content=makeRequest(url)
@@ -157,7 +168,22 @@ def categories(url):
     match=re.compile('<li><a href=\'([^\']*)\' style=.+?<\/b>(\d+)<\/a><\/li>').findall(content)
     for url,name in match:
       addDir('[COLOR lightgreen]'+name+'[/COLOR]',url,7,logos+'zui.png')	
-	  	    
+  if 'hdcaphe' in url:
+    addDir('[COLOR yellow]hdcaphe[/COLOR][B]   [COLOR lime]>[/COLOR][COLOR orange]>[/COLOR][COLOR blue]>[/COLOR][COLOR magenta]>[/COLOR]   [/B][COLOR yellow]Tìm Phim[/COLOR]',hd_caphe,1,logos+'hdcaphe.png')
+    addDir('[COLOR lime]Phim Xem Nhiều[/COLOR]',hd_caphe+'phim-xem-nhieu-nhat.html',7,logos+'hdcaphe.png')
+    addDir('[COLOR lightblue]Phim Mới[/COLOR]',hd_caphe+'phim-moi-nhat.html',7,logos+'hdcaphe.png')
+    addDir('[COLOR orange]Phim Hot[/COLOR]',hd_caphe+'phim-hot-trong-thang.html',7,logos+'hdcaphe.png')
+    addDir('[COLOR blue]Phim Full HD[/COLOR]',hd_caphe+'PHIM_HD.html',7,logos+'hdcaphe.png')
+    addDir('[COLOR magenta]Phim Hành Động Châu Á[/COLOR]',hd_caphe+'hanh-dong-chau-a.html',7,logos+'hdcaphe.png')
+    addDir('[COLOR magenta]Phim Hành Động Mỹ[/COLOR]',hd_caphe+'hanh-dng-m-56.html',7,logos+'hdcaphe.png')		
+    addDir('[COLOR tan]Phim Kinh Dị Châu Á[/COLOR]',hd_caphe+'kinh-d-ma-chau-a-52.html',7,logos+'hdcaphe.png')
+    addDir('[COLOR tan]Phim Kinh Dị Mỹ[/COLOR]',hd_caphe+'kinh-d-ma-chau-a.html',7,logos+'hdcaphe.png')		
+    addDir('[COLOR chocolate]Phim Tình Cảm Châu Á[/COLOR]',hd_caphe+'phim-chau-a.html',7,logos+'hdcaphe.png')
+    addDir('[COLOR chocolate]Phim Tình Cảm Mỹ[/COLOR]',hd_caphe+'phim-chau-au.html',7,logos+'hdcaphe.png')
+    addDir('[COLOR cyan]Phim Bộ Châu Á[/COLOR]',hd_caphe+'PHIM_BO_HD.html',7,logos+'hdcaphe.png')
+    addDir('[COLOR cyan]Phim Bộ Mỹ[/COLOR]',hd_caphe+'phim-b-m.html',7,logos+'hdcaphe.png')		
+    addDir('[COLOR violet]Phim Hoạt Hình[/COLOR]',hd_caphe+'PHIM_HD_IPHONE_MAY_TINH_BANG_TABLET.html',7,logos+'hdcaphe.png')
+   
 def index(url):
   content=makeRequest(url)
   if 'phim3s' in url:
@@ -192,7 +218,7 @@ def index(url):
       add_Link('[COLOR yellow]'+name+'[/COLOR]',pgt+url+'/Tap-1.html',pgt+thumbnail)					
     match=re.compile("<a  href='(.+?)'>(\d+)  <\/a>").findall(content)
     for url,name in match:
-      addDir('[COLOR lime]Trang '+name+'[/COLOR]',pgt+url.replace(' ','%20'),3,logos + 'pgt.png')					
+      addDir('[COLOR lime]Trang '+name+'[/COLOR]',pgt+url.replace(' ','%20'),3,logos+'pgt.png')					
  
 def videoLinks(url,name):
   content=makeRequest(url)
@@ -241,17 +267,27 @@ def mediaList(url):
     match=re.compile('<a data-tooltip=".+?" href="(.+?)" title="(.+?)".+?>\s*<img src="(.+?)"').findall(content)
     if 'phim-bo' in url:
       for url,name,thumbnail in match:
-        addDir('[COLOR yellow]' + name + '[/COLOR]',url,8,thumbnail)
+        addDir('[COLOR yellow]'+name+'[/COLOR]',url,8,thumbnail)
       match=re.compile("<a href=\"([^\"]*)\" title='.+?'>([^>]*)<\/a><\/li>").findall(content)
       for url,name in match:
         addDir('[COLOR lime]Trang '+name.replace('&laquo;','[COLOR cyan]Kế Trước[/COLOR]').replace(' &raquo;','[COLOR magenta]Kế Tiếp[/COLOR]')+'[/COLOR]',url,7,logos+'zui.png')	  
     else:
       for url,name,thumbnail in match:
-        add_Link('[COLOR yellow]' + name + '[/COLOR]',url,thumbnail)
+        add_Link('[COLOR yellow]'+name+'[/COLOR]',url,thumbnail)
       match=re.compile("<a href=\"([^\"]+)\" title='.+?'>([^>]*)<\/a><\/li>").findall(content)
       for url,name in match:
         addDir('[COLOR lime]Trang '+name.replace('&laquo;','[COLOR cyan]Kế Trước[/COLOR]').replace(' &raquo;','[COLOR magenta]Kế Tiếp[/COLOR]')+'[/COLOR]',url,7,logos+'zui.png')
-	  
+  if 'hdcaphe' in url:
+    match=re.compile("a style=\"position: relative;display: block;\" href=\"(.+?)\">\s*<img class=\"imgborder\" width=\"165\" src=\"(.+?)\"").findall(content)		
+    for url,thumbnail in match:
+      addDir('[COLOR lime][UPPERCASE]'+url.replace('detail/movies/','').replace('-',' ').replace('.html','')+'[/UPPERCASE][/COLOR]',hd_caphe+url.replace('detail','video').replace('.html','/play/clip_1.html'),8,hd_caphe+thumbnail)
+    match=re.compile("<span class=\"next\"><a href=\"(.+?)\" class=\"next\" title=\"(.+?)\">").findall(content)
+    for url,name in match:	
+      addDir('[COLOR yellow]'+name.replace('Go to page','Trang')+' >>>>[/COLOR]',hd_caphe+url,7,logos+'hdcaphe.png')
+    match=re.compile("<span class=\"last\"><a href=\"(.+?)\" class=\"last\" title=\"(.+?)\">").findall(content)
+    for url,name in match:	
+      addDir('[COLOR yellow]'+name.replace('Go to page','Trang')+'[/COLOR][COLOR cyan][B] = [/B][/COLOR][COLOR red]Trang cuối cùng >>>>[/COLOR]',hd_caphe+url,7,logos+'hdcaphe.png')
+  
 def episodes(url,name):
   content=makeRequest(url)
   if 'phimgiaitri' in url:    
@@ -270,7 +306,12 @@ def episodes(url,name):
     match=re.compile('<a id=\'.+?\' href=\'(.+?)\'  >(.+?)<\/a><\/li>').findall(content)
     for url,episode in match:
       add_Link(('%s   -   %s' % ('[COLOR lime]Tập '+episode+'[/COLOR]',name )),zui+url,'http://vncdn.zui.vn'+thumbnail)					
-	  
+  if 'hdcaphe' in url:
+    add_Link(name,url,logos+'hdcaphe.png')  
+    match=re.compile("<a style=\"margin-left:10px\" href=\"(.+?)\"  >(\d+)<\/a>").findall(content)
+    for url,title in match:
+      add_Link('[COLOR yellow]Tập '+title+'[/COLOR]',hd_caphe+url,logos+'hdcaphe.png')  
+  
 def inquiry():
   try:
     keyb=xbmc.Keyboard('', '[COLOR lime]Enter search text[/COLOR]')
@@ -293,7 +334,9 @@ def resolveUrl(url):
   if 'fptplay' in url:
 	mediaUrl=re.compile('"<source src=\'([^\']*)\'').findall(content)[0] 
   if 'zui' in url:
-    mediaUrl='rtmp'+re.compile("'rtmp(.+?)'").findall(content)[0]#+'/playlist.m3u8'	
+    mediaUrl='rtmp'+re.compile("'rtmp(.+?)'").findall(content)[0]#+'/playlist.m3u8'
+  if 'hdcaphe' in url:	
+    mediaUrl=re.compile('\'http.startparam\':\'start\',\s*file: \'(.+?)\'').findall(content)[0].replace(' ','%20')	
   item=xbmcgui.ListItem(path=mediaUrl)
   xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)	  
   return
