@@ -27,7 +27,8 @@ home=mysettings.getAddonInfo('path')
 fanart=xbmc.translatePath(os.path.join(home, 'fanart.jpg'))
 icon=xbmc.translatePath(os.path.join(home, 'icon.png'))
 logos=xbmc.translatePath(os.path.join(home, 'logos\\'))
-x_vietsimpletv='https://raw.githubusercontent.com/giolao/Viet-Simpletv/master/x_playlist.m3u'
+xvietsimpletv='https://raw.githubusercontent.com/giolao/Viet-Simpletv/master/x_playlist.m3u'
+youjizz = 'http://www.youjizz.com'
 
 def makeRequest(url):
   try:
@@ -46,14 +47,66 @@ def makeRequest(url):
       print 'Reason: ', e.reason
  
 def main():
-  addDir('[COLOR red]VietSimple Adult TV[/COLOR]',x_vietsimpletv,1,logos+'vietsimpletv.png')	
+  addDir('[COLOR lime]VietSimple [COLOR red][B] Adult TV[/B][/COLOR]',xvietsimpletv,3,logos+'vietsimpletv.png')	
+  addDir('[COLOR yellow]YouJizz [COLOR red][B] Adult Movies[/B][/COLOR]',youjizz,2,logos+'youjizz.png')	
+  
+def search():
+  if 'youjizz.com' in name:
+    try:
+      keyb = xbmc.Keyboard('', '[COLOR yellow]Enter search text[/COLOR]')
+      keyb.doModal()
+      if (keyb.isConfirmed()):
+        searchText = urllib.quote_plus(keyb.getText())
+      url = 'http://www.youjizz.com/srch.php?q=' + searchText
+      s_mediaList(url)
+    except: pass
+  
+def categories(url): 
+  addDir('[COLOR yellow]youjizz.com[B]   [COLOR lime]>[COLOR cyan]>[COLOR orange]>[COLOR magenta]>   [/B][COLOR yellow]Movie Search[/COLOR]',youjizz,1,logos + 'youjizz.png')
+  content = makeRequest(url)
+  match = re.compile("<a href=\"(.+?)\" ><span>(.+?)<\/span><\/a>").findall(content)
+  for url,name in match:
+    addDir('[COLOR cyan]' + name + '[/COLOR]',youjizz + url,3,logos + 'youjizz.png')  
+  match = re.compile("<a href=\"([^\"]*)\"><span>(.+?)<\/span><\/a>").findall(content)[1:-1]
+  for url,name in match:
+    addDir('[COLOR cyan]' + name + '[/COLOR]',youjizz + url,3,logos + 'youjizz.png')
+ 
+def mediaList(url):
+  content=makeRequest(url)
+  if 'Viet-Simpletv' in url:  
+    match=re.compile('#EXTINF.+?,(.+)\s([^"]*)\n').findall(content)
+    for name,url in match:
+	  addLink('[COLOR lime]'+name.replace('>','y ')+'[/COLOR]',url,logos+'vietsimpletv.png')
+  if 'youjizz' in url:
+    match = re.compile("<a class=\"frame\" href='(.+?)'.+?><\/a>\s*<img class.+?data-original=\"(.+?)\">\s*<\/span>\s*<span id=\"title1\">(.+?)<\/span>\s*<span id=\"title2\">\s*<span class='thumbtime'><span>(.+?)<\/span>").findall(content)		
+    for url,thumbnail,name,duration in match:
+      add_Link('[COLOR yellow]' + name + '   [COLOR lime][' + duration + '][/COLOR]',youjizz + url,thumbnail)
+    match = re.compile("<a href=\"(.+?).html\">(\d+)<\/a>").findall(content)
+    for url,name in match:	
+      addDir('[COLOR orange]Trang ' + name + '[COLOR cyan]  >>>>[/COLOR]',youjizz + url +'.html',3,logos + 'youjizz.png')
+    match = re.compile("<a href='([^>]*)'>(\d+)<\/a>").findall(content)
+    for url,name in match:	
+      addDir('[COLOR red]Trang ' + name + '[COLOR magenta]  >>>>[/COLOR]',youjizz + url,3,logos + 'youjizz.png')
 
-def xvietsimpletv(url):
-  content=makeRequest(url)	
-  match=re.compile('#EXTINF.+?,(.+)\s([^"]*)\n').findall(content)
-  for name,url in match:
-	  addLink('[COLOR red]'+name+'[/COLOR]',url,logos+'vietsimpletv.png')
+def resolveUrl(url):
+  content = makeRequest(url)
+  mediaUrl = re.compile("<a href=\"(.+?)\" style=\".+?\" >Download This Video<\/a>").findall(content)[0]     
+  item = xbmcgui.ListItem(path=mediaUrl)
+  xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)	  
+  return
 
+def s_mediaList(url):	
+  content = makeRequest(url)	
+  match = re.compile("<a class=\"frame\" href='(.+?)'.+?><\/a>\s*<img class.+?data-original=\"(.+?)\"").findall(content)		
+  for url,thumbnail in match:
+    add_Link('[COLOR yellow]' + url.replace('/videos/','').replace('-',' ').replace('.html','') + '[/COLOR]',youjizz + url,thumbnail)
+  match = re.compile("<a href=\"(.+?).html\">(\d+)<\/a>").findall(content)
+  for url,name in match:	
+    addDir('[COLOR orange]Trang ' + name + '[COLOR cyan]  >>>>[/COLOR]',youjizz + url +'.html',5,logos + 'youjizz.png')
+  match = re.compile("<a href='([^>]*)'>(\d+)<\/a>").findall(content)
+  for url,name in match:	
+    addDir('[COLOR red]Trang ' + name + '[COLOR magenta]  >>>>[/COLOR]',youjizz + url,5,logos + 'youjizz.png')
+  
 def get_params():
   param=[]
   paramstring=sys.argv[2]
@@ -70,7 +123,14 @@ def get_params():
       if (len(splitparams))==2:
         param[splitparams[0]]=splitparams[1]
   return param
-				  
+
+def add_Link(name,url,iconimage):
+  u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode=4"  
+  liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
+  liz.setInfo( type="Video", infoLabels={ "Title": name } )
+  liz.setProperty('IsPlayable', 'true')  
+  ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz)  
+  
 def addDir(name,url,mode,iconimage):
   u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)
   ok=True
@@ -84,7 +144,8 @@ def addLink(name,url,iconimage):
   liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
   liz.setInfo( type="Video", infoLabels={ "Title": name } )
   ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=url,listitem=liz)
-  return ok                   
+  return ok  
+  
 params=get_params()
 url=None
 name=None
@@ -111,6 +172,18 @@ if mode==None or url==None or len(url)<1:
   main()
 
 elif mode==1:
-  xvietsimpletv(url)
+  search()
+
+elif mode==2:
+  categories(url)
+  
+elif mode==3:
+  mediaList(url)
+  
+elif mode==4:
+  resolveUrl(url) 
+
+elif mode==5:
+  s_mediaList(url)  
   
 xbmcplugin.endOfDirectory(int(sys.argv[1]))

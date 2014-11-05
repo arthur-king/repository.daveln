@@ -1,2 +1,5 @@
+v 1.0.1
+Add youjizz.com
+
 v 1.0.0
 Initial release
