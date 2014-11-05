@@ -27,8 +27,8 @@ home=mysettings.getAddonInfo('path')
 fanart=xbmc.translatePath(os.path.join(home, 'fanart.jpg'))
 icon=xbmc.translatePath(os.path.join(home, 'icon.png'))
 logos=xbmc.translatePath(os.path.join(home, 'logos\\'))
-anhtrang = 'http://phim.anhtrang.org/'
-m_anhtrang = 'http://m.anhtrang.org/'
+anhtrang='http://phim.anhtrang.org/'
+m_anhtrang='http://m.anhtrang.org/'
 hd_caphe='http://phim.hdcaphe.com/'
 phim3s='http://phim3s.net/'
 dchd='http://dangcaphd.com/'
@@ -55,7 +55,7 @@ def makeRequest(url):
 def main():
   addDir('[COLOR yellow]phim3s.net[/COLOR]',phim3s,2,logos+'phim3s_1.png')
   addDir('[COLOR lime]dangcaphd.com[/COLOR]',dchd,2,logos+'dchd_1.png')
-  addDir('[COLOR lightblue]hdcaphe[/COLOR]',hd_caphe,2,logos+'hdcaphe.png')
+  addDir('[COLOR lightblue]hdcaphe.com[/COLOR]',hd_caphe,2,logos+'hdcaphe.png')
   addDir('[COLOR orange]anhtrang.org[/COLOR]',anhtrang,2,logos+'anhtrang.png')  
   addDir('[COLOR cyan]phimgiaitri.vn[/COLOR]',pgt,5,logos+'pgt.png')   
   addDir('[COLOR magenta]fptplay.net[/COLOR]',fptplay,2,logos+'fptplay.png')
@@ -123,7 +123,7 @@ def search():
       if (keyb.isConfirmed()):
         searchText=urllib.quote_plus(keyb.getText())
       url=anhtrang+'tim-kiem='+searchText+'.html'
-      mediaList(url)
+      anhtrang_mediaList(url)
     except: pass	
 	
 def categories(url):
@@ -196,23 +196,23 @@ def categories(url):
     addDir('[COLOR cyan]Phim Bộ Mỹ[/COLOR]',hd_caphe+'phim-b-m.html',7,logos+'hdcaphe.png')		
     addDir('[COLOR violet]Phim Hoạt Hình[/COLOR]',hd_caphe+'PHIM_HD_IPHONE_MAY_TINH_BANG_TABLET.html',7,logos+'hdcaphe.png')
   if 'anhtrang' in url:  
-    addDir('[COLOR yellow]anhtrang[/COLOR][B]   [COLOR lime]>[/COLOR][COLOR cyan]>[/COLOR][COLOR orange]>[/COLOR][COLOR magenta]>[/COLOR]   [/B][COLOR yellow]Tìm Phim[/COLOR]',anhtrang,1,logos + 'anhtrang.png')
-    content = makeRequest(anhtrang)
-    match = re.compile("<a class=\"link\" href=\"([^\"]*)\" >\s*<span>(.+?)<\/span>").findall(content)
+    addDir('[COLOR yellow]anhtrang[/COLOR][B]   [COLOR lime]>[/COLOR][COLOR cyan]>[/COLOR][COLOR orange]>[/COLOR][COLOR magenta]>[/COLOR]   [/B][COLOR yellow]Tìm Phim[/COLOR]',anhtrang,1,logos+'anhtrang.png')
+    content=makeRequest(anhtrang)
+    match=re.compile("<a class=\"link\" href=\"([^\"]*)\" >\s*<span>(.+?)<\/span>").findall(content)
     for url,name in match:
-      addDir('[COLOR lime]' + name + '[/COLOR]',url,7,logos + 'anhtrang.png')  
-    match = re.compile("<a class=\"link\" href=\"([^\"]+)\">\s*<span>(.+?)<\/span>").findall(content)[0:7]
+      addDir('[COLOR lime]'+name+'[/COLOR]',url,12,logos+'anhtrang.png')  
+    match=re.compile("<a class=\"link\" href=\"([^\"]+)\">\s*<span>(.+?)<\/span>").findall(content)[0:7]
     for url,name in match:
-      addDir('[COLOR cyan]' + name + '[/COLOR]',url,7,logos + 'anhtrang.png')
-    match = re.compile("<a class=\"link\" href=\"([^\"]+)\">\s*<span>(.+?)<\/span>").findall(content)[7:19]
+      addDir('[COLOR cyan]'+name+'[/COLOR]',url,12,logos+'anhtrang.png')
+    match=re.compile("<a class=\"link\" href=\"([^\"]+)\">\s*<span>(.+?)<\/span>").findall(content)[7:19]
     for url,name in match:
-      addDir('[COLOR orange]' + name + '[/COLOR]',url,7,logos + 'anhtrang.png')	
-    match = re.compile('<li class="item27">\s*<a class="topdaddy link" href="([^"]*)">\s*<span>(.+?)<\/span>').findall(content)
+      addDir('[COLOR orange]'+name+'[/COLOR]',url,12,logos+'anhtrang.png')	
+    match=re.compile('<li class="item27">\s*<a class="topdaddy link" href="([^"]*)">\s*<span>(.+?)<\/span>').findall(content)
     for url,name in match:
-      addDir('[COLOR magenta]' + name + '[/COLOR]',url,7,logos + 'anhtrang.png') 
-    match = re.compile('<li class="item28">\s*<a class="topdaddy link" href="(.+?)">\s*<span>(.+?)<\/span>').findall(content)
+      addDir('[COLOR magenta]'+name+'[/COLOR]',url,12,logos+'anhtrang.png') 
+    match=re.compile('<li class="item28">\s*<a class="topdaddy link" href="(.+?)">\s*<span>(.+?)<\/span>').findall(content)
     for url,name in match:
-      addDir('[COLOR lightblue]' + name + '[/COLOR]',url,7,logos + 'anhtrang.png') 
+      addDir('[COLOR lightblue]'+name+'[/COLOR]',url,12,logos+'anhtrang.png') 
   
 def index(url):
   content=makeRequest(url)
@@ -316,17 +316,19 @@ def mediaList(url):
       addDir('[COLOR yellow]'+name.replace('Go to page','Trang')+' >>>>[/COLOR]',hd_caphe+url,7,logos+'hdcaphe.png')
     match=re.compile("<span class=\"last\"><a href=\"(.+?)\" class=\"last\" title=\"(.+?)\">").findall(content)
     for url,name in match:	
-      addDir('[COLOR yellow]'+name.replace('Go to page','Trang')+'[/COLOR][COLOR cyan][B] = [/B][/COLOR][COLOR red]Trang cuối cùng >>>>[/COLOR]',hd_caphe+url,7,logos+'hdcaphe.png')
-  if 'anhtrang' in url:
-    match = re.compile("<a href=\"([^\"]*)\" title=\"([^\"]+)\"><img src=\"(.+?)\"").findall(content)		
-    for url,name,thumbnail in match:
-      addDir('[COLOR yellow]' + name + '[/COLOR]',url.replace(anhtrang,m_anhtrang),8,thumbnail)
-    match = re.compile("<a class=\"pagelink\" href=\"(.+?)\">(.+?)<\/a>").findall(content)
-    for url,name in match:	
-      addDir('[COLOR lime]Trang ' + name + '[COLOR cyan] >>>>[/COLOR]',url,7,logos + 'anhtrang.png')
-    match = re.compile("<a class=\"pagelast\" href=\"([^\"]*)\">(.+?)<\/a>").findall(content)
-    for url,name in match:	
-      addDir('[COLOR red]Trang ' + name.replace('Cuối','[COLOR red]Cuối[COLOR magenta] >>>>[/COLOR]') + '[/COLOR]',url,7,logos + 'anhtrang.png')
+      addDir('[COLOR yellow]'+name.replace('Go to page','Trang')+'[/COLOR][COLOR cyan][B]=[/B][/COLOR][COLOR red]Trang cuối cùng >>>>[/COLOR]',hd_caphe+url,7,logos+'hdcaphe.png')
+
+def anhtrang_mediaList(url):
+  content=makeRequest(url)
+  match=re.compile("<a href=\"([^\"]*)\" title=\"([^\"]+)\"><img src=\"(.+?)\"").findall(content)		
+  for url,name,thumbnail in match:
+    addDir('[COLOR yellow]'+name+'[/COLOR]',url.replace(anhtrang,m_anhtrang),14,thumbnail)
+  match=re.compile("<a class=\"pagelink\" href=\"(.+?)\">(.+?)<\/a>").findall(content)
+  for url,name in match:	
+    addDir('[COLOR lime]Trang '+name+'[/COLOR][COLOR cyan] >>>>[/COLOR]',url,12,logos+'anhtrang.png')
+  match=re.compile("<a class=\"pagelast\" href=\"([^\"]*)\">(.+?)<\/a>").findall(content)
+  for url,name in match:	
+    addDir('[COLOR red]Trang '+name.replace('Cuối','[COLOR red]Cuối[/COLOR][COLOR magenta] >>>>[/COLOR]')+'[/COLOR]',url,12,logos+'anhtrang.png')
    
 def episodes(url,name):
   content=makeRequest(url)
@@ -351,11 +353,13 @@ def episodes(url,name):
     match=re.compile("<a style=\"margin-left:10px\" href=\"(.+?)\"  >(\d+)<\/a>").findall(content)
     for url,title in match:
       add_Link('[COLOR yellow]Tập '+title+'[/COLOR]',hd_caphe+url,logos+'hdcaphe.png')  
-  if 'anhtrang' in url:
-    add_Link('[COLOR lime]Tập 1' + '[COLOR cyan][B]  -  [/B][/COLOR]'+name,url,logos + 'anhtrang.png')
-    match = re.compile('<a href="(.+?)" class="ep">(.+?)<\/a>').findall(content)
-    for url,title in match:
-      add_Link('[COLOR lime]Tập ' + title + '[COLOR cyan][B]  -  [/B][/COLOR]' + name,url,logos + 'anhtrang.png')   
+
+def anhtrang_eps(url,name):
+  content=makeRequest(url)
+  add_Link('[COLOR lime]Tập 1'+'[COLOR cyan][B]  -  [/B][/COLOR]'+name,url,logos+'anhtrang.png')
+  match=re.compile('<a href="(.+?)" class="ep">(.+?)<\/a>').findall(content)
+  for url,title in match:
+    add_Link('[COLOR lime]Tập '+title+'[COLOR cyan][B]  -  [/B][/COLOR]'+name,url,logos+'anhtrang.png')   
   
 def inquiry():
   try:
@@ -384,9 +388,9 @@ def resolveUrl(url):
     mediaUrl=re.compile('\'http.startparam\':\'start\',\s*file: \'(.+?)\'').findall(content)[0].replace(' ','%20')	
   if 'anhtrang' in url:
     try:
-      mediaUrl = re.compile("<source src=\"([^\"]*)\"").findall(content)[0]
+      mediaUrl=re.compile("<source src=\"([^\"]*)\"").findall(content)[0]
     except: 
-      mediaUrl = re.compile("var video_src_mv=\"(.+?)\"").findall(content)[0]   
+      mediaUrl=re.compile("var video_src_mv=\"(.+?)\"").findall(content)[0]   
   item=xbmcgui.ListItem(path=mediaUrl)
   xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)	  
   return
@@ -501,5 +505,11 @@ elif mode==10:
 
 elif mode==11:
   urlResolver(url) 
+  
+elif mode==12:
+  anhtrang_mediaList(url) 
+
+elif mode==14:
+  anhtrang_eps(url,name)  
   
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
