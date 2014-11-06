@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
 <addon id="plugin.video.netadult"
-       name="*netadult"
-       version="1.0.2"
+       name="*net[COLOR red][B]adult[/B][COLOR yellow]18+[/COLOR]"
+       version="1.0.3"
        provider-name="DaveLN">
   <requires>
         <import addon="xbmc.python" version="2.1.0" optional="true" />
