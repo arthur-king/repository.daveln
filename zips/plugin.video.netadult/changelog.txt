@@ -1,3 +1,7 @@
+v 1.0.2
+Fix youjizz
+search and random
+
 v 1.0.1
 Add youjizz.com
 
