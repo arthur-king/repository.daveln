@@ -55,7 +55,7 @@ def makeRequest(url):
 def main():
   addDir('[COLOR yellow]phim3s.net[/COLOR]',phim3s,2,logos+'phim3s_1.png')
   addDir('[COLOR lime]dangcaphd.com[/COLOR]',dchd,2,logos+'dchd_1.png')
-  addDir('[COLOR lightblue]hdcaphe.com[/COLOR]',hd_caphe,2,logos+'hdcaphe.png')
+  addDir('[COLOR lightblue]hdcaphe.com[/COLOR]',hd_caphe+'camera-quan-sat.html',2,logos+'hdcaphe.png')
   addDir('[COLOR orange]anhtrang.org[/COLOR]',anhtrang,2,logos+'anhtrang.png')  
   addDir('[COLOR cyan]phimgiaitri.vn[/COLOR]',pgt,5,logos+'pgt.png')   
   addDir('[COLOR magenta]fptplay.net[/COLOR]',fptplay,2,logos+'fptplay.png')
@@ -182,19 +182,16 @@ def categories(url):
       addDir('[COLOR lightgreen]'+name+'[/COLOR]',url,7,logos+'zui.png')	
   if 'hdcaphe' in url:
     addDir('[COLOR yellow]hdcaphe[/COLOR][B]   [COLOR lime]>[/COLOR][COLOR orange]>[/COLOR][COLOR blue]>[/COLOR][COLOR magenta]>[/COLOR]   [/B][COLOR yellow]Tìm Phim[/COLOR]',hd_caphe,1,logos+'hdcaphe.png')
-    addDir('[COLOR lime]Phim Xem Nhiều[/COLOR]',hd_caphe+'phim-xem-nhieu-nhat.html',7,logos+'hdcaphe.png')
-    addDir('[COLOR lightblue]Phim Mới[/COLOR]',hd_caphe+'phim-moi-nhat.html',7,logos+'hdcaphe.png')
-    addDir('[COLOR orange]Phim Hot[/COLOR]',hd_caphe+'phim-hot-trong-thang.html',7,logos+'hdcaphe.png')
-    addDir('[COLOR blue]Phim Full HD[/COLOR]',hd_caphe+'PHIM_HD.html',7,logos+'hdcaphe.png')
-    addDir('[COLOR magenta]Phim Hành Động Châu Á[/COLOR]',hd_caphe+'hanh-dong-chau-a.html',7,logos+'hdcaphe.png')
-    addDir('[COLOR magenta]Phim Hành Động Mỹ[/COLOR]',hd_caphe+'hanh-dng-m-56.html',7,logos+'hdcaphe.png')		
-    addDir('[COLOR tan]Phim Kinh Dị Châu Á[/COLOR]',hd_caphe+'kinh-d-ma-chau-a-52.html',7,logos+'hdcaphe.png')
-    addDir('[COLOR tan]Phim Kinh Dị Mỹ[/COLOR]',hd_caphe+'kinh-d-ma-chau-a.html',7,logos+'hdcaphe.png')		
-    addDir('[COLOR chocolate]Phim Tình Cảm Châu Á[/COLOR]',hd_caphe+'phim-chau-a.html',7,logos+'hdcaphe.png')
-    addDir('[COLOR chocolate]Phim Tình Cảm Mỹ[/COLOR]',hd_caphe+'phim-chau-au.html',7,logos+'hdcaphe.png')
-    addDir('[COLOR cyan]Phim Bộ Châu Á[/COLOR]',hd_caphe+'PHIM_BO_HD.html',7,logos+'hdcaphe.png')
-    addDir('[COLOR cyan]Phim Bộ Mỹ[/COLOR]',hd_caphe+'phim-b-m.html',7,logos+'hdcaphe.png')		
-    addDir('[COLOR violet]Phim Hoạt Hình[/COLOR]',hd_caphe+'PHIM_HD_IPHONE_MAY_TINH_BANG_TABLET.html',7,logos+'hdcaphe.png')
+    match = re.compile("<li class=\"sibling\"><a href=\"([^\"]*)\"   title=\"([^\"]+)\"").findall(content)[3:7]
+    for url,name in match:	
+      addDir('[COLOR lime]'+name+'[/COLOR]',hd_caphe+url,7,logos+'hdcaphe.png')
+    match = re.compile("<li class=\"first\"><a href=\"(.+?)\"   title=\"(.+?)\"").findall(content)[0:4]
+    for url,name in match:	
+      addDir('[COLOR orange]'+name+'[/COLOR]',hd_caphe+url,7,logos+'hdcaphe.png')
+    match = re.compile("<li class=\"last\"><a href=\"(.+?)\"   title=\"(.+?)\"").findall(content)[0:-1]
+    for url,name in match:	
+      addDir('[COLOR cyan]'+name+'[/COLOR]',hd_caphe+url,7,logos+'hdcaphe.png')
+    addDir('[COLOR violet]PHIM HOẠT HÌNH[/COLOR]',hd_caphe+'PHIM_HD_IPHONE_MAY_TINH_BANG_TABLET.html',7,logos+'hdcaphe.png')  	
   if 'anhtrang' in url:  
     addDir('[COLOR yellow]anhtrang[/COLOR][B]   [COLOR lime]>[/COLOR][COLOR cyan]>[/COLOR][COLOR orange]>[/COLOR][COLOR magenta]>[/COLOR]   [/B][COLOR yellow]Tìm Phim[/COLOR]',anhtrang,1,logos+'anhtrang.png')
     content=makeRequest(anhtrang)
@@ -316,7 +313,7 @@ def mediaList(url):
       addDir('[COLOR yellow]'+name.replace('Go to page','Trang')+' >>>>[/COLOR]',hd_caphe+url,7,logos+'hdcaphe.png')
     match=re.compile("<span class=\"last\"><a href=\"(.+?)\" class=\"last\" title=\"(.+?)\">").findall(content)
     for url,name in match:	
-      addDir('[COLOR yellow]'+name.replace('Go to page','Trang')+'[/COLOR][COLOR cyan][B]=[/B][/COLOR][COLOR red]Trang cuối cùng >>>>[/COLOR]',hd_caphe+url,7,logos+'hdcaphe.png')
+      addDir('[COLOR yellow]'+name.replace('Go to page','Trang')+'[/COLOR][COLOR cyan][B] = [/B][/COLOR][COLOR red]Trang cuối cùng >>>>[/COLOR]',hd_caphe+url,7,logos+'hdcaphe.png')
 
 def anhtrang_mediaList(url):
   content=makeRequest(url)
