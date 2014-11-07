@@ -53,8 +53,8 @@ def makeRequest(url):
       print 'Reason: ', e.reason
  	  
 def main():
-  addDir('[COLOR lime]HD[/COLOR] [COLOR cyan]Channels[/COLOR]','hdchannels',8,logos+'hd.png')
-  addDir('[COLOR yellow]TV Hải Ngoại[/COLOR]   ++   [COLOR cyan]Âm Nhạc[/COLOR]   ++   [COLOR lime]Radio[/COLOR]',tvchannels,7,logos+'tivihn.png')
+  addDir('[COLOR lime]HD [COLOR cyan]Channels[/COLOR]','hdchannels',8,logos+'hd.png')
+  addDir('[COLOR yellow]TV Hải Ngoại   ++   [COLOR cyan]Âm Nhạc   ++   [COLOR lime]Radio[/COLOR]',tvchannels,7,logos+'tivihn.png')
   addDir('[COLOR deeppink]Access Asia Network[/COLOR]',tvchannels,7,logos+'accessasia.png')
   addDir('[COLOR lightblue]FPTPlay[/COLOR]',fptplay,2,logos+'fptplay.png')  
   addDir('[COLOR cyan]haotivi[/COLOR]',haotivi,1,logos+'hao.png')		
@@ -62,7 +62,7 @@ def main():
   addDir('[COLOR yellow]VietSimple TV[/COLOR]',viet_simpletv,10,logos+'vietsimpletv.png')  
   addDir('[COLOR cyan]VTC[/COLOR]',tvchannels,7,logos+'vtccomvn.png')		
   addDir('[COLOR magenta]HTVOnline[/COLOR]',htvonline,6,logos+'htvonline.png')
-  addDir('[COLOR lime]TV24VN[/COLOR]    [COLOR lime]>[/COLOR][COLOR magenta]>[/COLOR][COLOR orange]>[/COLOR][COLOR yellow]>[/COLOR]    [COLOR yellow]SCTV[/COLOR]',tv24vn,6,logos+'tv24vn.png')				
+  addDir('[COLOR lime]TV24VN    [COLOR lime]>[COLOR magenta]>[COLOR orange]>[COLOR yellow]>    [COLOR yellow]SCTV[/COLOR]',tv24vn,6,logos+'tv24vn.png')				
   addDir('[COLOR white]Zui Live TV[/COLOR]',zuitv,6,logos+'zui.png')
   addLink('[COLOR lightgreen]Little Sai Gon TV[/COLOR]','http://stream.s15.cpanelservices.com/lstvlive/livestream/playlist.m3u8',logos+'littlesaigon.png')	
   addLink('[COLOR silver]Animal Planet[/COLOR]','http://202.75.23.34:80/live/ch31//01.m3u8',logos+'ap.png')	
@@ -86,14 +86,14 @@ def vietsimpletv(url):
     elif 'xemphimso' in url:  
       addDir('[COLOR blue]'+name+'[/COLOR]',url,7,logos+'vietsimpletv.png')	  
     elif 'radiovietnam' in url or 'VOA News' in name  or 'NHK Vietnam' in name  or 'RFI Vietnam' in name  or 'VOH' in name:  
-      addLink('[COLOR orange]'+name+'[/COLOR]  -  [COLOR lightgreen]Radio[/COLOR]',url,logos+'vietsimpletv.png')	 
+      addLink('[COLOR orange]'+name+'  -  [COLOR lightgreen]Radio[/COLOR]',url,logos+'vietsimpletv.png')	 
     elif 'accessasia' in url:  
       addLink('[COLOR silver]'+name+'[/COLOR]',url,logos+'vietsimpletv.png')		  
     else:  
       addLink('[COLOR yellow]'+name+'[/COLOR]',url,logos+'vietsimpletv.png')		  
   
 def fpt(url):
-  addDir('[COLOR cyan]Tìm FPTPlay\'s Video[/COLOR][B]   [COLOR cyan]>[/COLOR][COLOR yellow]>[/COLOR][COLOR lime]>[/COLOR][COLOR orange]>[/COLOR]   [/B][COLOR orange]Video Search[/COLOR]',fptplay,11,logos+'fptplay.png')		 
+  addDir('[COLOR cyan]Tìm FPTPlay\'s Video[B]   [COLOR cyan]>[COLOR yellow]>[COLOR lime]>[COLOR orange]>   [/B][COLOR orange]Video Search[/COLOR]',fptplay,11,logos+'fptplay.png')		 
   content=makeRequest(url)	
   match=re.compile("<li ><a href=\"(.+?)\" class=\".+?\">(.+?)<\/a><\/li>").findall(content)
   for url,name in match:
@@ -106,7 +106,7 @@ def mediaList(url):
   content=makeRequest(url)
   match=re.compile("<div class=\"col\">\s*<a href=\"([^\"]+)\">\s*<img src=\"([^\"]*)\" alt=\"(.+?)\"").findall(content)
   for url,thumbnail,name in match:	
-    addDir('[COLOR lime]'+name.replace('&amp;','[COLOR cyan]và[/COLOR]')+'[/COLOR]',fptplay+url,5,thumbnail)
+    addDir('[COLOR lime]'+name.replace('&amp;','[COLOR cyan]và')+'[/COLOR]',fptplay+url,5,thumbnail)
   match=re.compile("<li><a href=\"(.+?)\">(\d+)<\/a><\/li>").findall(content)
   for url,name in match:	
     addDir('[COLOR yellow]Trang '+name+'[/COLOR]',fptplay+url,3,logos+'fptplay.png')
@@ -122,7 +122,7 @@ def episodes(url):
   title=re.compile('<title>([^\']+)</title>').findall(content)		
   match=re.compile("<a href=\"\/Video([^\"]*)\">(.*?)<\/a><\/li>").findall(content)
   for url,name in match:
-    add_Link(('%s   -   %s' % ('[COLOR lime]Tập '+name+'[/COLOR]','[COLOR yellow]'+title[-1].replace('&amp;','[COLOR cyan]và[/COLOR]')+'[/COLOR]')),('%sVideo%s' % (fptplay, url)),logos+'fptplay.png')
+    add_Link(('%s   -   %s' % ('[COLOR lime]Tập '+name,'[COLOR yellow]'+title[-1].replace('&amp;','[COLOR cyan]và')+'[/COLOR]')),('%sVideo%s' % (fptplay, url)),logos+'fptplay.png')
 	
 def index(url):
   content=makeRequest(url)
@@ -186,11 +186,11 @@ def videoLinks(url,name):
   elif 'Hong Kong' in name:						
     match=re.compile("\"lang\":\"hk\".*?:\"([^\"]*)\",\"title\":\".+?\",\"uid\":\"(.*?)\"").findall(content)
     for url,name in match:
-      addLink('[COLOR blue]Hong Kong - [/COLOR][COLOR yellow]channel  '+name+'[/COLOR]',url,logos+'hk.png')
+      addLink('[COLOR blue]Hong Kong - [COLOR yellow]channel  '+name+'[/COLOR]',url,logos+'hk.png')
   elif 'Taiwan' in name:			
     match=re.compile("\"lang\":\"tw\".*?:\"([^\"]*)\",\"title\":\".+?\",\"uid\":\"(.*?)\"").findall(content)
     for url,name in match:
-      addLink('[COLOR magenta]Taiwan - [/COLOR][COLOR yellow]channel  '+name+'[/COLOR]',url,logos+'tw.png')
+      addLink('[COLOR magenta]Taiwan - [COLOR yellow]channel  '+name+'[/COLOR]',url,logos+'tw.png')
   elif 'US' in name:		
     match=re.compile("\"lang\":\"us\".*?:\"([^\"]*)\",\"title\":\"(.+?)\"").findall(content)
     for url,name in match:
@@ -198,7 +198,7 @@ def videoLinks(url,name):
   elif 'China' in name:						
     match=re.compile("\"lang\":\"cn\".*?:\"([^\"]*)\",\"title\":\".+?\",\"uid\":\"(.*?)\"").findall(content)
     for url,name in match:
-      addLink('[COLOR cyan]China - [/COLOR][COLOR yellow]channel  '+name+'[/COLOR]',url,logos+'cn.png')
+      addLink('[COLOR cyan]China - [COLOR yellow]channel  '+name+'[/COLOR]',url,logos+'cn.png')
   elif 'Brazil' in name:		
     match=re.compile("\"lang\":\"br\".*?:\"([^\"]*)\",\"title\":\"(.+?)\"").findall(content)
     for url,name in match:
@@ -206,7 +206,7 @@ def videoLinks(url,name):
   elif 'Korea' in name:		
     match=re.compile("\"lang\":\"ko\".*?:\"([^\"]*)\",\"title\":\".+?\",\"uid\":\"(.*?)\"").findall(content)
     for url,name in match:
-      addLink('[COLOR deeppink]Korea - [/COLOR][COLOR yellow]channel  '+name+'[/COLOR]',url,logos+'ko.png')
+      addLink('[COLOR deeppink]Korea - [COLOR yellow]channel  '+name+'[/COLOR]',url,logos+'ko.png')
   elif 'Thailand' in name:		
     match=re.compile("\"lang\":\"th\".*?:\"([^\"]*)\",\"title\":\"(.+?)\"").findall(content)
     for url,name in match:

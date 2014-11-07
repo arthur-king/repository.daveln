@@ -129,7 +129,7 @@ def search():
 def categories(url):
   content=makeRequest(url)
   if 'phim3s' in url:
-    addDir('[COLOR yellow]phim3s[/COLOR][B]   [COLOR lime]>[/COLOR][COLOR orange]>[/COLOR][COLOR blue]>[/COLOR][COLOR magenta]>[/COLOR]   [/B][COLOR yellow]Tìm Phim[/COLOR]',phim3s,1,logos+'phim3s_1.png')
+    addDir('[COLOR yellow]phim3s[B]   [COLOR lime]>[COLOR orange]>[COLOR blue]>[COLOR magenta]>   [/B][COLOR yellow]Tìm Phim[/COLOR]',phim3s,1,logos+'phim3s_1.png')
     match=re.compile("<a href=\"the-loai([^\"]*)\" title=\"([^\"]+)\">.+?<\/a>").findall(content) 
     for url,name in match:
       addDir('[COLOR cyan]'+name+'[/COLOR]',('%sthe-loai%s' % (phim3s, url)),3,logos+'phim3s_2.png')					
@@ -140,7 +140,7 @@ def categories(url):
     for url,name in match:
       addDir('[COLOR lightblue]'+name+'[/COLOR]',('%sdanh-sach%s' % (phim3s, url)),3,logos+'phim3s_4.png')					
   if 'dangcaphd' in url:
-    addDir('[COLOR yellow]dangcaphd[/COLOR][B]   [COLOR lime]>[/COLOR][COLOR cyan]>[/COLOR][COLOR orange]>[/COLOR][COLOR lightgreen]>[/COLOR]   [/B][COLOR yellow]Tìm Phim[/COLOR]',dchd+'',1,logos+'dchd_1.png')
+    addDir('[COLOR yellow]dangcaphd[B]   [COLOR lime]>[COLOR cyan]>[COLOR orange]>[COLOR lightgreen]>   [/B][COLOR yellow]Tìm Phim[/COLOR]',dchd+'',1,logos+'dchd_1.png')
     match=re.compile("<a href=\"([^\"]*)\" class='menutop' title='([^']+)'>").findall(content)
     for url,name in match:
       addDir('[COLOR lime]'+name+'[/COLOR]',url,3,logos+'dchd_2.png')  
@@ -154,12 +154,12 @@ def categories(url):
     for url,name in match:
       addDir('[COLOR lightgreen]'+name+'[/COLOR]',dchd+'movie'+url,3,logos+'dchd_2.png')					
   if 'phimgiaitri' in url:
-    addDir('[COLOR lime]phimgiatri[/COLOR][B]   [COLOR lime]>[/COLOR][COLOR orange]>[/COLOR][COLOR blue]>[/COLOR][COLOR magenta]>[/COLOR]   [/B][COLOR lime]Tìm Phim Lẻ[/COLOR]',pgt,1,logos+'pgt.png')
+    addDir('[COLOR lime]phimgiatri[B]   [COLOR lime]>[COLOR orange]>[COLOR blue]>[COLOR magenta]>   [/B][COLOR lime]Tìm Phim Lẻ[/COLOR]',pgt,1,logos+'pgt.png')
     match=re.compile('<a href=\'result.php\?type=Phim Lẻ(.+?)\'><span>(.+?)<\/span>').findall(content)
     for url,name in match:
       addDir('[COLOR yellow]'+name+'[/COLOR]',pgt+'result.php?type=Phim%20L%E1%BA%BB'+url.replace(' ','%20'),3,logos+'pgt.png')	
   if 'fptplay' in url:
-    addDir('[COLOR lime]fptplay[/COLOR][B]   [COLOR lime]>[/COLOR][COLOR orange]>[/COLOR][COLOR blue]>[/COLOR][COLOR magenta]>[/COLOR]   [/B][COLOR lime]Tìm Video[/COLOR]',fptplay,1,logos+'fptplay.png')
+    addDir('[COLOR lime]fptplay[B]   [COLOR lime]>[COLOR orange]>[COLOR blue]>[COLOR magenta]>  [/B][COLOR lime]Tìm Video[/COLOR]',fptplay,1,logos+'fptplay.png')
     match=re.compile("<li ><a href=\"(.+?)\" class=\".+?\">(.+?)<\/a><\/li>").findall(content)
     for url,name in match:
       if 'livetv' in url:
@@ -167,7 +167,7 @@ def categories(url):
       else:
         addDir('[COLOR magenta]'+name+'[/COLOR]',fptplay+url,6,logos+'fptplay.png')	
   if 'zui' in url:
-    addDir('[COLOR magenta]zui[/COLOR][B]   [COLOR lime]>[/COLOR][COLOR orange]>[/COLOR][COLOR blue]>[/COLOR][COLOR magenta]>[/COLOR]   [/B][COLOR magenta]Tìm Phim[/COLOR]',zui,1,logos+'zui.png') 
+    addDir('[COLOR magenta]zui[B]   [COLOR lime]>[COLOR orange]>[COLOR blue]>[COLOR magenta]>   [/B][COLOR magenta]Tìm Phim[/COLOR]',zui,1,logos+'zui.png') 
     match=re.compile("<li><a title=\".+?\" href=\"([^\"]*)\">([^>]+)<\/a><\/li>").findall(content)[0:3]
     for url,name in match:
       addDir('[COLOR yellow]'+name+'[/COLOR]',url,7,logos+'zui.png')	  
@@ -181,7 +181,7 @@ def categories(url):
     for url,name in match:
       addDir('[COLOR lightgreen]'+name+'[/COLOR]',url,7,logos+'zui.png')	
   if 'hdcaphe' in url:
-    addDir('[COLOR yellow]hdcaphe[/COLOR][B]   [COLOR lime]>[/COLOR][COLOR orange]>[/COLOR][COLOR blue]>[/COLOR][COLOR magenta]>[/COLOR]   [/B][COLOR yellow]Tìm Phim[/COLOR]',hd_caphe,1,logos+'hdcaphe.png')
+    addDir('[COLOR yellow]hdcaphe[B]   [COLOR lime]>[COLOR orange]>[COLOR blue]>[COLOR magenta]>   [/B][COLOR yellow]Tìm Phim[/COLOR]',hd_caphe,1,logos+'hdcaphe.png')
     match = re.compile("<li class=\"sibling\"><a href=\"([^\"]*)\"   title=\"([^\"]+)\"").findall(content)[3:7]
     for url,name in match:	
       addDir('[COLOR lime]'+name+'[/COLOR]',hd_caphe+url,7,logos+'hdcaphe.png')
@@ -193,7 +193,7 @@ def categories(url):
       addDir('[COLOR cyan]'+name+'[/COLOR]',hd_caphe+url,7,logos+'hdcaphe.png')
     addDir('[COLOR violet]PHIM HOẠT HÌNH[/COLOR]',hd_caphe+'PHIM_HD_IPHONE_MAY_TINH_BANG_TABLET.html',7,logos+'hdcaphe.png')  	
   if 'anhtrang' in url:  
-    addDir('[COLOR yellow]anhtrang[/COLOR][B]   [COLOR lime]>[/COLOR][COLOR cyan]>[/COLOR][COLOR orange]>[/COLOR][COLOR magenta]>[/COLOR]   [/B][COLOR yellow]Tìm Phim[/COLOR]',anhtrang,1,logos+'anhtrang.png')
+    addDir('[COLOR yellow]anhtrang[B]   [COLOR lime]>[COLOR cyan]>[COLOR orange]>[COLOR magenta]>   [/B][COLOR yellow]Tìm Phim[/COLOR]',anhtrang,1,logos+'anhtrang.png')
     content=makeRequest(anhtrang)
     match=re.compile("<a class=\"link\" href=\"([^\"]*)\" >\s*<span>(.+?)<\/span>").findall(content)
     for url,name in match:
@@ -265,7 +265,7 @@ def pgtri():
 def dirs(url):
   content=makeRequest(url) 
   if 'phimgiaitri' in url:
-    addDir('[COLOR yellow]phimgiatri[/COLOR][B]   [COLOR lime]>[/COLOR][COLOR orange]>[/COLOR][COLOR blue]>[/COLOR][COLOR magenta]>[/COLOR]   [/B][COLOR yellow]Tìm Phim Bộ[/COLOR]',pgt,9,logos+'pgt.png')
+    addDir('[COLOR yellow]phimgiatri[B]   [COLOR lime]>[COLOR orange]>[COLOR blue]>[COLOR magenta]>   [/B][COLOR yellow]Tìm Phim Bộ[/COLOR]',pgt,9,logos+'pgt.png')
     match=re.compile('<a href=\'result.php\?type=Phim Bộ(.+?)\'><span>(.+?)<\/span>').findall(content) 
     for url,name in match:
       addDir('[COLOR lime]'+name+'[/COLOR]',pgt+'result.php?type=Phim%20B%E1%BB%99'+url.replace(' ','%20'),7,logos+'pgt.png')
@@ -286,7 +286,7 @@ def mediaList(url):
   if 'fptplay' in url:
     match=re.compile("<div class=\"col\">\s*<a href=\"([^\"]+)\">\s*<img src=\"([^\"]*)\" alt=\"(.+?)\"").findall(content)
     for url,thumbnail,name in match:	
-      addDir('[COLOR lime]'+name.replace('&amp;','[COLOR cyan]và[/COLOR]')+'[/COLOR]',fptplay+url,8,thumbnail)
+      addDir('[COLOR lime]'+name.replace('&amp;','[COLOR cyan]và')+'[/COLOR]',fptplay+url,8,thumbnail)
     match=re.compile("<li><a href=\"(.+?)\">(\d+)<\/a><\/li>").findall(content)
     for url,name in match:	
       addDir('[COLOR yellow]Trang '+name+'[/COLOR]',fptplay+url,7,logos+'fptplay.png')
@@ -297,13 +297,13 @@ def mediaList(url):
         addDir('[COLOR yellow]'+name+'[/COLOR]',url,8,thumbnail)
       match=re.compile("<a href=\"([^\"]*)\" title='.+?'>([^>]*)<\/a><\/li>").findall(content)
       for url,name in match:
-        addDir('[COLOR lime]Trang '+name.replace('&laquo;','[COLOR cyan]Kế Trước[/COLOR]').replace(' &raquo;','[COLOR magenta]Kế Tiếp[/COLOR]')+'[/COLOR]',url,7,logos+'zui.png')	  
+        addDir('[COLOR lime]Trang '+name.replace('&laquo;','[COLOR cyan]Kế Trước').replace(' &raquo;','[COLOR magenta]Kế Tiếp')+'[/COLOR]',url,7,logos+'zui.png')	  
     else:
       for url,name,thumbnail in match:
         add_Link('[COLOR yellow]'+name+'[/COLOR]',url,thumbnail)
       match=re.compile("<a href=\"([^\"]+)\" title='.+?'>([^>]*)<\/a><\/li>").findall(content)
       for url,name in match:
-        addDir('[COLOR lime]Trang '+name.replace('&laquo;','[COLOR cyan]Kế Trước[/COLOR]').replace(' &raquo;','[COLOR magenta]Kế Tiếp[/COLOR]')+'[/COLOR]',url,7,logos+'zui.png')
+        addDir('[COLOR lime]Trang '+name.replace('&laquo;','[COLOR cyan]Kế Trước').replace(' &raquo;','[COLOR magenta]Kế Tiếp')+'[/COLOR]',url,7,logos+'zui.png')
   if 'hdcaphe' in url:
     match=re.compile("a style=\"position: relative;display: block;\" href=\"(.+?)\">\s*<img class=\"imgborder\" width=\"165\" src=\"(.+?)\"").findall(content)		
     for url,thumbnail in match:
@@ -313,7 +313,7 @@ def mediaList(url):
       addDir('[COLOR yellow]'+name.replace('Go to page','Trang')+' >>>>[/COLOR]',hd_caphe+url,7,logos+'hdcaphe.png')
     match=re.compile("<span class=\"last\"><a href=\"(.+?)\" class=\"last\" title=\"(.+?)\">").findall(content)
     for url,name in match:	
-      addDir('[COLOR yellow]'+name.replace('Go to page','Trang')+'[/COLOR][COLOR cyan][B] = [/B][/COLOR][COLOR red]Trang cuối cùng >>>>[/COLOR]',hd_caphe+url,7,logos+'hdcaphe.png')
+      addDir('[COLOR yellow]'+name.replace('Go to page','Trang')+'[COLOR cyan][B] = [/B][COLOR red]Trang cuối cùng >>>>[/COLOR]',hd_caphe+url,7,logos+'hdcaphe.png')
 
 def anhtrang_mediaList(url):
   content=makeRequest(url)
@@ -322,10 +322,10 @@ def anhtrang_mediaList(url):
     addDir('[COLOR yellow]'+name+'[/COLOR]',url.replace(anhtrang,m_anhtrang),14,thumbnail)
   match=re.compile("<a class=\"pagelink\" href=\"(.+?)\">(.+?)<\/a>").findall(content)
   for url,name in match:	
-    addDir('[COLOR lime]Trang '+name+'[/COLOR][COLOR cyan] >>>>[/COLOR]',url,12,logos+'anhtrang.png')
+    addDir('[COLOR lime]Trang '+name+'[COLOR cyan] >>>>[/COLOR]',url,12,logos+'anhtrang.png')
   match=re.compile("<a class=\"pagelast\" href=\"([^\"]*)\">(.+?)<\/a>").findall(content)
   for url,name in match:	
-    addDir('[COLOR red]Trang '+name.replace('Cuối','[COLOR red]Cuối[/COLOR][COLOR magenta] >>>>[/COLOR]')+'[/COLOR]',url,12,logos+'anhtrang.png')
+    addDir('[COLOR red]Trang '+name.replace('Cuối','[COLOR red]Cuối[COLOR magenta] >>>>')+'[/COLOR]',url,12,logos+'anhtrang.png')
    
 def episodes(url,name):
   content=makeRequest(url)
@@ -339,7 +339,7 @@ def episodes(url,name):
     title=re.compile('<title>([^\']+)</title>').findall(content)		
     match=re.compile("<a href=\"\/Video([^\"]*)\">(.*?)<\/a><\/li>").findall(content)
     for url,name in match:
-      add_Link(('%s   -   %s' % ('[COLOR lime]Tập '+name+'[/COLOR]','[COLOR yellow]'+title[-1].replace('&amp;','[COLOR cyan]và[/COLOR]')+'[/COLOR]')),('%sVideo%s' % (fptplay, url)),logos+'fptplay.png')
+      add_Link(('%s   -   %s' % ('[COLOR lime]Tập '+name,'[COLOR yellow]'+title[-1].replace('&amp;','[COLOR cyan]và')+'[/COLOR]')),('%sVideo%s' % (fptplay, url)),logos+'fptplay.png')
   if 'zui' in url:
     thumbnail=re.compile("<meta property=\"og:image\" content=\"(.+?)\"").findall(content)[0]		
     match=re.compile('<a id=\'.+?\' href=\'(.+?)\'  >(.+?)<\/a><\/li>').findall(content)
