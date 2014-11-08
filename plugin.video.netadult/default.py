@@ -31,6 +31,7 @@ xvietsimpletv='https://raw.githubusercontent.com/giolao/Viet-Simpletv/master/x_p
 vietsextv='rtmpe://64.62.143.5/live/do%20not%20steal%20my-Stream2'
 xvideos='http://www.xvideos.com'
 youjizz='http://www.youjizz.com'
+tube8='http://www.tube8.com/'
 
 def makeRequest(url):
   try:
@@ -50,9 +51,11 @@ def makeRequest(url):
  
 def main():
   addLink('[COLOR orange]Viet [COLOR red][B]Sex TV[/B][/COLOR]',vietsextv,logos+'vietsextv.png')
+  addDir('[COLOR yellow]HD [COLOR red][B] Adult Videos[/B][COLOR cyan] - [COLOR lime]Tube8[/COLOR]',tube8+'cat/hd/22/',5,logos+'hdadult.png')  
   addDir('[COLOR lime]VietSimple [COLOR red][B] Adult TV[/B][/COLOR]',xvietsimpletv,3,logos+'vietsimpletv.png')	
-  addDir('[COLOR yellow]YouJizz [COLOR red][B] Adult Movies[/B][/COLOR]',youjizz,2,logos+'youjizz.png')	
-  addDir('[COLOR cyan]XVideos [COLOR red][B] Adult Movies[/B][/COLOR]',xvideos,2,logos+'xvideos.png')	
+  addDir('[COLOR yellow]YouJizz [COLOR red][B] Adult Videos[/B][/COLOR]',youjizz,2,logos+'youjizz.png')	
+  addDir('[COLOR cyan]XVideos [COLOR red][B] Adult Videos[/B][/COLOR]',xvideos,2,logos+'xvideos.png')	
+  addDir('[COLOR magenta]Tube8 [COLOR red][B] Adult Videos[/B][/COLOR]',tube8,2,logos+'tube8.png')  
   
 def search():
   if 'youjizz.com' in name:
@@ -75,6 +78,16 @@ def search():
       print "Searching URL: "+url	  
       mediaList(url)
     except: pass	
+  if 'tube8.com' in name:
+    try:
+      keyb=xbmc.Keyboard('', '[COLOR yellow]Enter search text[/COLOR]')
+      keyb.doModal()
+      if (keyb.isConfirmed()):
+        searchText=urllib.quote_plus(keyb.getText())
+      url=tube8+'searches.html?q='+searchText
+      print "Searching URL: "+url	  
+      mediaList(url)
+    except: pass	  
   
 def categories(url): 
   content=makeRequest(url)
@@ -99,7 +112,28 @@ def categories(url):
     match=re.compile("<li><a href=\"\/c\/(.+?)\">(.+?)<\/a>").findall(content) 
     for url,name in match:
       addDir('[COLOR cyan]'+name+'[/COLOR]',xvideos+'/c/'+url,3,logos+'xvideos.png')  
-  
+  if 'tube8' in url:
+    addDir('[COLOR lime]tube8.com[B]   [COLOR lime]>[COLOR cyan]>[COLOR orange]>[COLOR magenta]>   [/B][COLOR lime]Movie Search[/COLOR]',tube8,1,logos+'tube8.png')
+    match=re.compile('href=\'([^\']*)\'>(.+?)<').findall(content)
+    for url,name in match:
+      if 'HD' in name:
+        addDir('[COLOR yellow]'+name+'[/COLOR]',url,3, logos+'tube8.png')
+    match=re.compile('href=\'([^\']*)\'>(.+?)<').findall(content)
+    for url,name in match:	  
+      if 'HD' in name:
+	    pass
+      else:  
+        addDir('[COLOR cyan]'+name+'[/COLOR]',url,3, logos+'tube8.png')	  
+
+def tube8_HD(url):
+  content=makeRequest(url)
+  match=re.compile("href=\"(.+?)\" class=\"video-thumb-link\".+?src=\"(.+?)\" alt=\"(.+?)\"").findall(content)
+  for url,thumbnail,name in match:
+    add_Link('[COLOR yellow]'+name+'[/COLOR]',url,thumbnail)
+  match=re.compile("href=\"(.+?)\">(\d+)<").findall(content) 
+  for url,name in match:  
+   addDir('[COLOR lime]Trang '+name+'[COLOR orange] >>>>[/COLOR]',url,5,logos+'hdadult.png') 
+     
 def mediaList(url):
   content=makeRequest(url)
   if 'Viet-Simpletv' in url:  
@@ -127,13 +161,22 @@ def mediaList(url):
       add_Link('[COLOR yellow]'+name+'[/COLOR]',xvideos+url,thumbnail)
     match=re.compile("class=\"nP\" href=\"(.+?)\">Next<").findall(content)  
     addDir('[COLOR lime]Trang[COLOR orange]  Kế[COLOR cyan]  Tiếp[COLOR red]  >>>>[/COLOR]',xvideos+match[0],3,logos+'xvideos.png')
+  if 'tube8' in url:
+    match=re.compile("href=\"(.+?)\" class=\"video-thumb-link\".+?src=\"(.+?)\" alt=\"(.+?)\"").findall(content)
+    for url,thumbnail,name in match:
+      add_Link('[COLOR yellow]'+name+'[/COLOR]',url,thumbnail)
+    match=re.compile("href=\"(.+?)\">(\d+)<").findall(content) 
+    for url,name in match:  
+     addDir('[COLOR lime]Trang '+name+'[COLOR orange] >>>>[/COLOR]',url,3,logos+'tube8.png')
   
 def resolveUrl(url):
   content=makeRequest(url)
   if 'youjizz' in url:
     mediaUrl=re.compile("<a href=\"(.+?)\" style=\".+?\" >Download This Video<\/a>").findall(content)[0]
   if 'xvideos' in url:
-    mediaUrl=urllib.unquote(re.compile("flv_url=(.+?)&amp").findall(content)[-1])  
+    mediaUrl=urllib.unquote(re.compile("flv_url=(.+?)&amp").findall(content)[-1]) 
+  if 'tube8' in url:
+    mediaUrl=re.compile('videoUrlJS	= \'(.+?)\'').findall(content)[0]	
   item=xbmcgui.ListItem(path=mediaUrl)
   xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)	  
   return
@@ -213,5 +256,8 @@ elif mode==3:
   
 elif mode==4:
   resolveUrl(url) 
+
+elif mode==5:
+  tube8_HD(url)  
   
 xbmcplugin.endOfDirectory(int(sys.argv[1]))

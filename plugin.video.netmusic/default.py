@@ -71,6 +71,7 @@ def search():
       if (keyb.isConfirmed()):
         searchText=urllib.quote_plus(keyb.getText())
       url=nhacso+'tim-kiem/'+searchText+'.html'
+      print "Searching URL: "+url	  
       mediaList(url)
     except: pass
   if 'Chia Sẻ Nhạc' in name:
@@ -80,6 +81,7 @@ def search():
       if (keyb.isConfirmed()):
         searchText=urllib.quote_plus(keyb.getText())
       url=csn+'search.php?s='+searchText#+'&song_list=""'
+      print "Searching URL: "+url	  
       mediaList(url)
     except: pass
   if 'Nhạc Của Tui' in name:
@@ -89,6 +91,7 @@ def search():
       if (keyb.isConfirmed()):
         searchText=urllib.quote_plus(keyb.getText())
       url=nctm+'tim-kiem?q='+searchText
+      print "Searching URL: "+url	  
       mediaList(url)
     except: pass
     
@@ -116,13 +119,15 @@ def categories(url):
   if 'nhaccuatui' in url:
     addDir('[COLOR yellow]Nhạc Của Tui   [B][COLOR lime]>[COLOR orange]>[COLOR blue]>[COLOR magenta]>   [/B][COLOR yellow]Tìm Video[/COLOR]',nctm,1,logos+'nhaccuatui.png')
     match=re.compile("href=\"http:\/\/m.nhaccuatui.com\/mv\/(.+?)\" title=\"([^\"]*)\"").findall(content)
-    for url,name in match:
-      if 'Phim' in name:
-        addDir('[COLOR orange]'+name+'[/COLOR]',nctm+'mv/'+url,3,logos+'nhaccuatui.png')	
+    for url,name in match:		
       if 'Cách Mạng' in name or 'Phim' in name:
 	    pass
       else:	  
         addDir('[COLOR lime]'+name+'[/COLOR]',nctm+'mv/'+url,3,logos+'nct.png')
+    match=re.compile("href=\"http:\/\/m.nhaccuatui.com\/mv\/(.+?)\" title=\"([^\"]*)\"").findall(content)
+    for url,name in match:
+      if 'Phim' in name:
+        addDir('[COLOR orange]'+name+'[/COLOR]',nctm+'mv/'+url,3,logos+'nhaccuatui.png')		
   
 def mediaList(url):
   content=makeRequest(url)

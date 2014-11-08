@@ -1,3 +1,7 @@
+v 1.0.10
+Fix nhaccuatui
+Add print to search
+
 v 1.0.9
 Add nhaccuatui
 clean up [/COLOR]

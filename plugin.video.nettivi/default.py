@@ -251,7 +251,7 @@ def HD():
   add_Link('[COLOR cyan]FBNC HD[/COLOR]','http://www.htvonline.com.vn/livetv/fbnc-34306E61.html',logos+'fnbchd.png')  	  	  
   content=makeRequest(vtcplay)  
   match=re.compile("\"Name\":\"(.*?)\".+?\"Thumbnail2\":\"(.+?)\".+?\"Path\":\"([^\"]*)\"").findall(content)
-  for  name,thumbnail,url in match:
+  for name,thumbnail,url in match:
     if ' HD' in name:
 	  addLink('[COLOR yellow]'+name.decode("utf-8")+'[/COLOR]',url,thumbnail)
 	  
@@ -262,6 +262,7 @@ def search():
     if (keyb.isConfirmed()):
       searchText=urllib.quote_plus(keyb.getText())
     url=fptplay+'Search/'+searchText
+    print "Searching URL: "+url	
     mediaList(url)
   except: pass
 	  

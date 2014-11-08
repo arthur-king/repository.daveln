@@ -69,6 +69,7 @@ def search():
       if (keyb.isConfirmed()):
         searchText=urllib.quote_plus(keyb.getText())
       url=phim3s+'search?keyword='+searchText
+      print "Searching URL: "+url	  
       index(url)
     except: pass
   if 'dangcaphd' in name:
@@ -78,6 +79,7 @@ def search():
       if (keyb.isConfirmed()):
         searchText=urllib.quote_plus(keyb.getText())
       url=dchd+'movie/search.html?key='+searchText+'&search_movie=0'
+      print "Searching URL: "+url	  
       index(url)
     except: pass
   if 'Tìm Phim Lẻ' in name:
@@ -87,6 +89,7 @@ def search():
       if (keyb.isConfirmed()):
         searchText=urllib.quote_plus(keyb.getText())
       url=pgt+'result.php?type=search&keywords='+searchText
+      print "Searching URL: "+url	  
       index(url)
     except: pass
   if 'fptplay' in name:
@@ -96,6 +99,7 @@ def search():
       if (keyb.isConfirmed()):
         searchText=urllib.quote_plus(keyb.getText())
       url=fptplay+'Search/'+searchText
+      print "Searching URL: "+url	  
       mediaList(url)
     except: pass
   if 'zui' in name:
@@ -105,6 +109,7 @@ def search():
       if (keyb.isConfirmed()):
 	    searchText=urllib.quote_plus(keyb.getText())
       url='http://zui.vn/tim-kiem-nc/'+searchText+'.html'
+      print "Searching URL: "+url	  
       mediaList(url)
     except: pass
   if 'hdcaphe' in name:		
@@ -114,6 +119,7 @@ def search():
       if (keyb.isConfirmed()):
         searchText=urllib.quote_plus(keyb.getText())
       url=hd_caphe+'search-result.html?keywords='+searchText
+      print "Searching URL: "+url	  
       mediaList(url)
     except: pass	
   if 'anhtrang' in name:		
@@ -123,6 +129,7 @@ def search():
       if (keyb.isConfirmed()):
         searchText=urllib.quote_plus(keyb.getText())
       url=anhtrang+'tim-kiem='+searchText+'.html'
+      print "Searching URL: "+url	  
       anhtrang_mediaList(url)
     except: pass	
 	
